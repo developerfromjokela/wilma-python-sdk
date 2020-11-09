@@ -6,6 +6,7 @@ from ..net.classes import *
 from ..net.conf import CONFIG
 import json
 from ..gen import apikey as keygen
+from ..parser.optimizer import optimizeHomepage
 
 
 def checkForWilmaError(response):
@@ -73,7 +74,7 @@ class WilmaAPIClient:
                     if response['LoginResult'] != "Ok":
                         return ErrorResult("Not logged in!")
                     else:
-                        return HomepageResult(response, (len(response.get('Roles', [])) > 0))
+                        return HomepageResult(optimizeHomepage(response), (len(response.get('Roles', [])) > 0))
 
                 else:
                     return ErrorResult("Homepage couldn't be parsed")
@@ -114,7 +115,7 @@ class WilmaAPIClient:
                 if 'Wilma2SID' not in cookies:
                     return ErrorResult("Session not found")
                 if "LoginResult" in response and response['LoginResult'] == "Ok":
-                    return LoginResult(cookies['Wilma2SID'], (len(response.get('Roles', [])) > 0), response)
+                    return LoginResult(cookies['Wilma2SID'], (len(response.get('Roles', [])) > 0), optimizeHomepage(response))
                 else:
                     return ErrorResult("Login failed, check username and password")
             else:
