@@ -7,7 +7,22 @@ import io
 """
 Does several things:
 - Decodes profile image to Pillow object
+- Changes type to user-firendly string
 """
+
+types = {
+    1: 'teacher',
+    2: 'student',
+    3: 'personnel',
+    4: 'guardian',
+    5: 'workplaceinstructor',
+    6: 'johtokunta',
+    7: 'passwd'
+}
+
+
+def convertType(type):
+    return types[type]
 
 
 def optimizeHomepage(homepage):
@@ -15,8 +30,13 @@ def optimizeHomepage(homepage):
         for role in homepage['Roles']:
             if "Photo" in role and len(role['Photo']) > 0:
                 role['Photo'] = base64ImageToPillow(role['Photo'])
+            if "Type" in role:
+                role['Type'] = convertType(role['Type'])
+
     if "Photo" in homepage and len(homepage['Photo']) > 0:
         homepage['Photo'] = base64ImageToPillow(homepage['Photo'])
+    if "Type" in homepage:
+        homepage['Type'] = convertType(homepage['Type'])
     return homepage
 
 
