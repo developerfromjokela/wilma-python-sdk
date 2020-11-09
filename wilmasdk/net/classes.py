@@ -61,16 +61,6 @@ class AuthSessionResult(RequestResult):
         return self.authSessionId
 
 
-class LoginResult(RequestResult):
-
-    def __init__(self, session):
-        super().__init__(False, None, None)
-        self.session = session
-
-    def get_session(self):
-        return self.session
-
-
 class SessionValidateResult(RequestResult):
 
     def __init__(self, validation, user_id, user_type):

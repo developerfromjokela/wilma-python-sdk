@@ -82,9 +82,11 @@ class WilmaAPIClient:
                 return error_check
             if not result.is_error():
                 response = result.get_response().json()
-                if "LoginResult" in response and response['LoginResult'] is "Ok":
-                    print(result.get_response().cookies)
-                    return LoginResult("", (len(response.get('Roles', [])) > 0), response)
+                cookies = result.get_response().cookies.get_dict()
+                if 'Wilma2SID' not in cookies:
+                    return ErrorResult("Session not found")
+                if "LoginResult" in response and response['LoginResult'] == "Ok":
+                    return LoginResult(cookies['Wilma2SID'], (len(response.get('Roles', [])) > 0), response)
                 else:
                     return ErrorResult("Login failed, check username and password")
             else:

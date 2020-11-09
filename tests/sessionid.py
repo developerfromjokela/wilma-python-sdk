@@ -12,6 +12,8 @@ sdk = WilmaSDK()
 
 sdk.setWilmaServer("https://example.com")
 print("Checking fake")
+from .authdetails import WILMA_SETTINGS
+
 result = sdk.login("example", "example", "example")
 
 if result.is_error():
@@ -21,9 +23,9 @@ else:
 
 # Testing real Wilma server, expect different error
 
-sdk.setWilmaServer("https://test.inschool.fi")
+sdk.setWilmaServer(WILMA_SETTINGS['server'])
 print("Checking real")
-result = sdk.login("example", "example", "example")
+result = sdk.login(WILMA_SETTINGS['username'], WILMA_SETTINGS['password'], WILMA_SETTINGS['apikey'])
 
 if result.is_error():
     if result.get_wilma_error() is not None:
