@@ -7,7 +7,8 @@ sys.path.append("..")
 from wilmasdk.sdk import WilmaSDK
 
 sdk = WilmaSDK()
-from .authdetails import WILMA_SETTINGS
+
+from authdetails import WILMA_SETTINGS
 
 
 # Login Test

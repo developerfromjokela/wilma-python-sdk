@@ -5,6 +5,7 @@ import sys
 sys.path.append("..")
 
 from wilmasdk.sdk import WilmaSDK
+from authdetails import WILMA_SETTINGS
 
 sdk = WilmaSDK()
 
