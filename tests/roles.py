@@ -24,5 +24,35 @@ if result.is_error():
     else:
         print(result.get_exception())
 else:
+    print("SID: "+result.session)
     print("Complete!")
-    print("Roles required: "+str(result.roleSelectionRequired))
+    if result.roleSelectionRequired:
+        print("Roles required, enter position number")
+        passwdFormKey = result.homepage['FormKey']
+        for pos, role in enumerate(result.homepage['Roles']):
+            if role['FormKey'] != passwdFormKey:
+                print(" "+str(pos)+" --> "+role['Name'])
+        num = input("Enter number: \n")
+        numInt = int(num)
+        if numInt not in range(1, len(result.homepage['Roles'])):
+            print("Invalid number!")
+            exit(-1)
+        else:
+            role = result.homepage['Roles'][numInt]
+            print("Selected role: "+role['Name'])
+            sdk.setRole(role)
+            print("Trying to fetch role's homepage")
+            homepageResult = sdk.getHomepage()
+            if homepageResult.is_error():
+                print(str(homepageResult.get_exception()))
+                if homepageResult.get_wilma_error() is not None:
+                    print(homepageResult.get_wilma_error())
+            else:
+                homepage = homepageResult.homepage
+                if homepage['FormKey'] == role['FormKey']:
+                    print("Successfully switched to "+homepage['Name']+" role")
+                    print("Primus ID: "+str(homepage['PrimusId']))
+                    print("Type: "+str(homepage['Type']))
+
+    else:
+        print("Roles not required, not selecting")

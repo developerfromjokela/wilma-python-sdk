@@ -2,6 +2,7 @@
 #  @author developerfromjokela
 from .client.client import WilmaAPIClient
 from .net.classes import ErrorResult
+from .parser.validator.roles import validateRole
 
 
 class WilmaSDK:
@@ -26,6 +27,15 @@ class WilmaSDK:
 
     def setWilmaServer(self, url):
         self.apiClient.changeWilmaAddress(url)
+
+    def setRole(self, role):
+        if not validateRole(role):
+            raise Exception("Role is not valid!")
+        self.apiClient.setRole(role)
+
+    def getHomepage(self):
+        self.checkRequiredParams(True)
+        return self.apiClient.getHomepage()
 
     def login(self, username, password, apikey):
         self.checkRequiredParams(False)

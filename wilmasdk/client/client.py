@@ -33,6 +33,13 @@ class WilmaAPIClient:
 
     def changeWilmaAddress(self, server):
         self.httpclient.set_wilma_url(server)
+        self.wilmaserver = self.httpclient.baseUrl
+
+    def setRole(self, role):
+        slug = role['Slug']
+        if self.wilmaserver is not None and self.wilmaserver[len(self.wilmaserver)-1] is "/":
+            slug = slug[1:]
+        self.changeWilmaAddress(self.wilmaserver+slug)
 
     def getSession(self):
         try:
@@ -49,6 +56,27 @@ class WilmaAPIClient:
                     return AuthSessionResult(response['SessionID'])
                 else:
                     return ErrorResult('Unable to get login information, are you sure this is Wilma server?')
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
+    def getHomepage(self):
+        try:
+            result = self.httpclient.get_request('index_json')
+            error_check = checkForWilmaError(result.get_response())
+            if error_check is not None:
+                return error_check
+            if not result.is_error():
+                response = result.get_response().json()
+                if "LoginResult" in response:
+                    if response['LoginResult'] != "Ok":
+                        return ErrorResult("Not logged in!")
+                    else:
+                        return HomepageResult(response, (len(response.get('Roles', [])) > 0))
+
+                else:
+                    return ErrorResult("Homepage couldn't be parsed")
             else:
                 return result
         except Exception as e:

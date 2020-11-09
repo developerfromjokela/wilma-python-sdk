@@ -25,5 +25,6 @@ if result.is_error():
     else:
         print(result.get_exception())
 else:
+    print("SID: "+result.session)
     print("Complete!")
     print("Roles required: "+str(result.roleSelectionRequired))
