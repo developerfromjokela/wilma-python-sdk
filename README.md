@@ -1,2 +1,2 @@
-# wilma-python-sdk
+# Wilma Python SDK
 Python SDK for Wilma API
