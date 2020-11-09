@@ -2,14 +2,13 @@
 #  @author developerfromjokela
 
 import sys
+from authdetails import WILMA_SETTINGS
+
 sys.path.append("..")
 
 from wilmasdk.sdk import WilmaSDK
 
 sdk = WilmaSDK()
-
-from authdetails import WILMA_SETTINGS
-
 
 # Login Test
 
@@ -21,12 +20,13 @@ result = sdk.login(WILMA_SETTINGS['username'], WILMA_SETTINGS['password'], WILMA
 if result.is_error():
     if result.get_wilma_error() is not None:
         print(result.get_wilma_error()['message'])
-        print("--> "+result.get_wilma_error()['description'])
+        print("--> " + result.get_wilma_error()['description'])
     else:
         print(result.get_exception())
 else:
-    print("SID: "+result.session)
+    print("SID: " + result.session)
     print("Complete!")
-    print("Roles required: "+str(result.roleSelectionRequired))
-    print("Homepage: ")
-    print(result.homepage)
+    print("Fetching homepage")
+    homepageResult = sdk.getHomepage()
+    if not homepageResult.is_error():
+        print(homepageResult.homepage)

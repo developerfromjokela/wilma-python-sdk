@@ -36,6 +36,10 @@ class WilmaAPIClient:
         self.httpclient.set_wilma_url(server)
         self.wilmaserver = self.httpclient.baseUrl
 
+    def setSession(self, session_id):
+        self.httpclient.user_auth = session_id
+        self.wilmasesson = session_id
+
     def setRole(self, role):
         slug = role['Slug']
         if self.wilmaserver is not None and self.wilmaserver[len(self.wilmaserver)-1] is "/":
@@ -64,7 +68,7 @@ class WilmaAPIClient:
 
     def getHomepage(self):
         try:
-            result = self.httpclient.get_request('index_json')
+            result = self.httpclient.authenticated_get_request('index_json')
             error_check = checkForWilmaError(result.get_response())
             if error_check is not None:
                 return error_check
@@ -112,9 +116,9 @@ class WilmaAPIClient:
             if not result.is_error():
                 response = result.get_response().json()
                 cookies = result.get_response().cookies.get_dict()
-                if 'Wilma2SID' not in cookies:
-                    return ErrorResult("Session not found")
                 if "LoginResult" in response and response['LoginResult'] == "Ok":
+                    if 'Wilma2SID' not in cookies:
+                        return ErrorResult("Session not found")
                     return LoginResult(cookies['Wilma2SID'], (len(response.get('Roles', [])) > 0), optimizeHomepage(response))
                 else:
                     return ErrorResult("Login failed, check username and password")

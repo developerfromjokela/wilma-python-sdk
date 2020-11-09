@@ -1,5 +1,7 @@
 #  Copyright (c) 2020 Developer From Jokela.
 #  @author developerfromjokela
+import six
+
 
 class RequestResult:
 
@@ -23,6 +25,8 @@ class RequestResult:
 class ErrorResult(RequestResult):
 
     def __init__(self, exception, wilma_error=None):
+        if isinstance(exception, six.string_types):
+            exception = Exception(exception)
         super().__init__(True, exception)
         self.wilma_error = wilma_error
 

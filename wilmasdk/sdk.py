@@ -1,5 +1,6 @@
 #  Copyright (c) 2020 Developer From Jokela.
 #  @author developerfromjokela
+
 from .client.client import WilmaAPIClient
 from .net.classes import ErrorResult
 from .parser.validator.roles import validateRole
@@ -48,3 +49,7 @@ class WilmaSDK:
             if not loginResult.is_error():
                 self.roleRequired = loginResult.roleSelectionRequired
             return loginResult
+
+    def loginUsingSessionId(self, session_id):
+        self.apiClient.setSession(session_id)
+        return self.apiClient.getHomepage()

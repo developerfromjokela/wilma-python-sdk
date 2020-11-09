@@ -19,7 +19,7 @@ class WilmaHttpClient:
             wilma_url = wilma_url + "/"
         self.user_auth = user_auth
         self.baseUrl = wilma_url
-        self.sessionHttp = requests.Session()
+        self.sessionHttp = requests
 
     """
     Set Wilma BaseURL here
