@@ -74,3 +74,14 @@ class WilmaHttpClient:
             return RequestResult(False, None, r)
         except Exception as e:
             return ErrorResult(e)
+
+    def loginId_post_request(self, url, data, session_id, followRedirects=True):
+        sessionCookie = requests.cookies.create_cookie(domain=self.getBaseURLDomainName(), name='Wilma2LoginID',
+                                                       value=session_id)
+        self.sessionHttp.cookies.set_cookie(sessionCookie)
+        try:
+            r = self.sessionHttp.post(self.baseUrl + url, data=data,
+                                      allow_redirects=followRedirects)
+            return RequestResult(False, None, r)
+        except Exception as e:
+            return ErrorResult(e)

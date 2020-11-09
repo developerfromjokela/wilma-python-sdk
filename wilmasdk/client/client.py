@@ -4,16 +4,21 @@
 import wilmasdk.net.httpclient as httpclient
 from ..net.classes import *
 from ..net.conf import CONFIG
+import json
+from ..gen import apikey as keygen
 
 
 def checkForWilmaError(response):
     if response.status_code != 200:
-        jsonResponse = json.loads(response.text)
-        errorBody = jsonResponse.get('error', None)
-        if errorBody is not None:
-            return ErrorResult(Exception(errorBody['message']), errorBody)
-        else:
-            return ErrorResult(Exception("Unable to parse error code: " + str(response.status_code)))
+        try:
+            jsonResponse = json.loads(response.text)
+            errorBody = jsonResponse.get('error', None)
+            if errorBody is not None:
+                return ErrorResult(Exception(errorBody['message']), errorBody)
+            else:
+                return ErrorResult(Exception("Unable to parse error code: " + str(response.status_code)))
+        except Exception as e:
+            return ErrorResult('Unable to parse response, are you sure this is Wilma server?')
     else:
         return None
 
@@ -32,7 +37,7 @@ class WilmaAPIClient:
     def getSession(self):
         try:
             result = self.httpclient.get_request('index_json')
-            error_check = checkForWilmaError(requestResult.get_response())
+            error_check = checkForWilmaError(result.get_response())
             if error_check is not None:
                 return error_check
             if not result.is_error():
@@ -55,6 +60,33 @@ class WilmaAPIClient:
             if not result.is_error():
                 response = result.get_response().json()
                 return WilmaServersResult(response['wilmat'])
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
+    def login(self, username, password, session_id, apikey):
+        try:
+            apikey = keygen.generate_apikey(username=username, session_id=session_id, apikey=apikey)
+            data = {
+                'Login': username,
+                'Password': password,
+                'CompleteJson': '',
+                'SessionId': session_id,
+                'ApiKey': apikey,
+                'format': 'json'
+            }
+            result = self.httpclient.loginId_post_request('login', data, session_id)
+            error_check = checkForWilmaError(result.get_response())
+            if error_check is not None:
+                return error_check
+            if not result.is_error():
+                response = result.get_response().json()
+                if "LoginResult" in response and response['LoginResult'] is "Ok":
+                    print(result.get_response().cookies)
+                    return LoginResult("", (len(response.get('Roles', [])) > 0), response)
+                else:
+                    return ErrorResult("Login failed, check username and password")
             else:
                 return result
         except Exception as e:

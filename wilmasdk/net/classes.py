@@ -39,6 +39,17 @@ class WilmaServersResult(RequestResult):
     def get_wilma_servers(self):
         return self.servers
 
+class LoginResult(RequestResult):
+
+    def __init__(self, session, roleSelectionRequired, homepage):
+        super().__init__(False, None, None)
+        self.session = session
+        self.roleSelectionRequired = roleSelectionRequired
+        self.homepage = homepage
+
+    def get_wilma_servers(self):
+        return self.servers
+
 
 class AuthSessionResult(RequestResult):
 
