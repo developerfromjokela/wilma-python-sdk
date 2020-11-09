@@ -12,8 +12,8 @@ class WilmaSDK:
         self.role = None
         self.roleRequired = False
 
-    def checkRequiredParams(self, sessionRequired=True):
-        if sessionRequired and self.apiClient.wilmasesson is None:
+    def checkRequiredParams(self, session_required=True):
+        if session_required and self.apiClient.wilmasesson is None:
             return ErrorResult('Not logged in!')
         elif self.role is None and self.roleRequired:
             return ErrorResult('Role is required!')
@@ -37,4 +37,4 @@ class WilmaSDK:
             loginResult = self.apiClient.login(username, password, sessionID, apikey)
             if not loginResult.is_error():
                 self.roleRequired = loginResult.roleSelectionRequired
-
+            return loginResult
