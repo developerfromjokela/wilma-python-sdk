@@ -7,6 +7,9 @@ from wilmasdk.net.conf import CONFIG
 import json
 from wilmasdk.gen import apikey as keygen
 from wilmasdk.parser.optimizer import optimizeHomepage
+from wilmasdk.exception.exceptions import *
+
+reLoginErrors = ['common-20', 'common-18', 'common-15', 'common-34']
 
 
 def checkForWilmaError(response):
@@ -15,10 +18,12 @@ def checkForWilmaError(response):
             jsonResponse = json.loads(response.text)
             errorBody = jsonResponse.get('error', None)
             if errorBody is not None:
+                if errorBody['id'] in reLoginErrors:
+                    return ErrorResult(TokenExpiredException(), errorBody)
                 return ErrorResult(Exception(errorBody['message']), errorBody)
             else:
                 return ErrorResult(Exception("Unable to parse error code: " + str(response.status_code)))
-        except Exception as e:
+        except:
             return ErrorResult('Unable to parse response, are you sure this is Wilma server?')
     else:
         return None
@@ -42,9 +47,9 @@ class WilmaAPIClient:
 
     def setRole(self, role):
         slug = role['Slug']
-        if self.wilmaserver is not None and self.wilmaserver[len(self.wilmaserver)-1] is "/":
+        if self.wilmaserver is not None and self.wilmaserver[len(self.wilmaserver) - 1] is "/":
             slug = slug[1:]
-        self.changeWilmaAddress(self.wilmaserver+slug)
+        self.changeWilmaAddress(self.wilmaserver + slug)
 
     def getSession(self):
         try:
@@ -119,7 +124,8 @@ class WilmaAPIClient:
                 if "LoginResult" in response and response['LoginResult'] == "Ok":
                     if 'Wilma2SID' not in cookies:
                         return ErrorResult("Session not found")
-                    return LoginResult(cookies['Wilma2SID'], (len(response.get('Roles', [])) > 0), optimizeHomepage(response))
+                    return LoginResult(cookies['Wilma2SID'], (len(response.get('Roles', [])) > 0),
+                                       optimizeHomepage(response))
                 else:
                     return ErrorResult("Login failed, check username and password")
             else:
