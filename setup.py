@@ -14,6 +14,6 @@ setuptools.setup(
     description="Python SDK for Wilma API",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/javatechy/dokr",
+    url="https://github.com/developerfromjokela/wilma-python-sdk",
     packages=setuptools.find_packages(),
 )
