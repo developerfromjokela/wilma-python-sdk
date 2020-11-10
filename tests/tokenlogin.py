@@ -4,8 +4,6 @@
 import sys
 from authdetails import WILMA_SETTINGS
 
-sys.path.append("..")
-
 from wilmasdk.sdk import WilmaSDK
 
 sdk = WilmaSDK()
@@ -25,7 +23,5 @@ if result.is_error():
         print(result.get_exception())
 else:
     print("Complete!")
-    print("Fetching homepage")
-    homepageResult = sdk.getHomepage()
-    if not homepageResult.is_error():
-        print(homepageResult.homepage)
+    if not result.is_error():
+        print(result.homepage)
