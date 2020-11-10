@@ -2,11 +2,11 @@
 #  @author developerfromjokela
 
 import wilmasdk.net.httpclient as httpclient
-from ..net.classes import *
-from ..net.conf import CONFIG
+from wilmasdk.net.classes import *
+from wilmasdk.net.conf import CONFIG
 import json
-from ..gen import apikey as keygen
-from ..parser.optimizer import optimizeHomepage
+from wilmasdk.gen import apikey as keygen
+from wilmasdk.parser.optimizer import optimizeHomepage
 
 
 def checkForWilmaError(response):

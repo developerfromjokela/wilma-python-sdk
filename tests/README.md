@@ -1,1 +1,0 @@
-Copy `authdetails.py.example` to `authdetails.py`, fill in your credentials and run.

@@ -1,9 +1,9 @@
 #  Copyright (c) 2020 Developer From Jokela.
 #  @author developerfromjokela
 
-from .client.client import WilmaAPIClient
-from .net.classes import ErrorResult
-from .parser.validator.roles import validateRole
+from wilmasdk.client.client import WilmaAPIClient
+from wilmasdk.net.classes import ErrorResult
+from wilmasdk.parser.validator.roles import validateRole
 
 
 class WilmaSDK:
