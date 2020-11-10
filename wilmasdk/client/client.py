@@ -92,6 +92,31 @@ class WilmaAPIClient:
         except Exception as e:
             return ErrorResult(e)
 
+    def logout(self):
+        try:
+            result = self.httpclient.authenticated_post_request('logout', {'format': 'json'})
+            if not result.is_error():
+                response = result.get_response().json()
+                if "error" in response:
+                    if response['error']['id'] == reLoginErrors[0]:
+                        self.setSession(None)
+                        return LogoutResult()
+                    else:
+                        error_check = checkForWilmaError(result.get_response())
+                        if error_check is not None:
+                            return error_check
+                        else:
+                            self.setSession(None)
+                            return LogoutResult()
+
+
+                else:
+                    return ErrorResult("Logout failed, error object not found")
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
     def getWilmaServers(self):
         try:
             result = self.httpclient.get_request_external(CONFIG['wilmaservers_url'])

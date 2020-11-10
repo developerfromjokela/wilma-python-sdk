@@ -53,6 +53,12 @@ class LoginResult(RequestResult):
         self.homepage = homepage
 
 
+class LogoutResult(RequestResult):
+
+    def __init__(self):
+        super().__init__(False, None, None)
+
+
 class HomepageResult(RequestResult):
 
     def __init__(self, homepage, roleSelectionRequired):

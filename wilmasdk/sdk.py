@@ -51,6 +51,10 @@ class WilmaSDK:
                 self.roleRequired = loginResult.roleSelectionRequired
             return loginResult
 
+    def logout(self):
+        self.checkRequiredParams(True)
+        return self.apiClient.logout()
+
     def loginUsingSessionId(self, session_id):
         self.apiClient.setSession(session_id)
         return self.apiClient.getHomepage()
