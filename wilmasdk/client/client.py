@@ -61,7 +61,7 @@ class WilmaAPIClient:
                 response = result.get_response().json()
                 if 'SessionID' in response and "ApiVersion" in response:
                     if response['ApiVersion'] < CONFIG['minimumapiversion']:
-                        return ErrorResult('Wilma server is too old to work with this library. Api Version 10 and '
+                        return ErrorResult('Wilma server is too old to work with this library. Api Version '+str(CONFIG['minimumapiversion'])+' and '
                                            'newer is supported')
                     return AuthSessionResult(response['SessionID'])
                 else:
@@ -74,10 +74,10 @@ class WilmaAPIClient:
     def getHomepage(self):
         try:
             result = self.httpclient.authenticated_get_request('index_json')
-            error_check = checkForWilmaError(result.get_response())
-            if error_check is not None:
-                return error_check
             if not result.is_error():
+                error_check = checkForWilmaError(result.get_response())
+                if error_check is not None:
+                    return error_check
                 response = result.get_response().json()
                 if "LoginResult" in response:
                     if response['LoginResult'] != "Ok":
@@ -97,19 +97,16 @@ class WilmaAPIClient:
             result = self.httpclient.authenticated_post_request('logout', {'format': 'json'})
             if not result.is_error():
                 response = result.get_response().json()
-                if "error" in response:
-                    if response['error']['id'] == reLoginErrors[0]:
+                error_check = checkForWilmaError(result.get_response())
+                if error_check is not None:
+                    return error_check
+                if "LoginResult" in response:
+                    if response['LoginResult'] == "Failed":
                         self.setSession(None)
                         return LogoutResult()
                     else:
-                        error_check = checkForWilmaError(result.get_response())
-                        if error_check is not None:
-                            return error_check
-                        else:
-                            self.setSession(None)
-                            return LogoutResult()
-
-
+                        self.setSession(None)
+                        return LogoutResult()
                 else:
                     return ErrorResult("Logout failed, error object not found")
             else:
