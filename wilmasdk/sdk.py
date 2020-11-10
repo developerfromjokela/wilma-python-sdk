@@ -47,7 +47,7 @@ class WilmaSDK:
             sessionID = sessionRequest.get_auth_session()
             loginResult = self.apiClient.login(username, password, sessionID, apikey)
             if not loginResult.is_error():
-                self.apiClient.setSession(sessionID)
+                self.apiClient.setSession(loginResult.session)
                 self.roleRequired = loginResult.roleSelectionRequired
             return loginResult
 
