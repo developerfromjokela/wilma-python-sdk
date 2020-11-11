@@ -92,6 +92,26 @@ class WilmaAPIClient:
         except Exception as e:
             return ErrorResult(e)
 
+    def getLessonNotes(self):
+        try:
+            result = self.httpclient.authenticated_get_request('attendance/index_json')
+            if not result.is_error():
+                error_check = checkForWilmaError(result.get_response())
+                if error_check is not None:
+                    return error_check
+                response = result.get_response().json()
+                obs = []
+                allowSaveExcuse = ("AllowSaveExcuse" in response)
+                if allowSaveExcuse:
+                    allowSaveExcuse = response['AllowSaveExcuse']
+                if "Observations" in response:
+                    obs = response['Observations']
+                return LessonNotesResult(obs, allowSaveExcuse)
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
     def logout(self):
         try:
             result = self.httpclient.authenticated_post_request('logout', {'format': 'json'})

@@ -67,6 +67,14 @@ class HomepageResult(RequestResult):
         self.roleSelectionRequired = roleSelectionRequired
 
 
+class LessonNotesResult(RequestResult):
+
+    def __init__(self, lesson_notes, exuses_allowed):
+        super().__init__(False, None, None)
+        self.lesson_notes = lesson_notes
+        self.exuses_allowed = exuses_allowed
+
+
 class AuthSessionResult(RequestResult):
 
     def __init__(self, auth_session_d):
