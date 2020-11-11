@@ -42,6 +42,14 @@ def optimize_dict(d):
     return new
 
 
+def optimize_dict_array(array):
+    newArr = []
+    for item in array:
+        if isinstance(item, dict):
+            newArr.append(optimize_dict(item))
+    return newArr
+
+
 def optimizeHomepage(homepage):
     if "Roles" in homepage:
         for role in homepage['Roles']:

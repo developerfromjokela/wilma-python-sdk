@@ -19,7 +19,8 @@ def optimizeLessonNote(lesson_note):
                      'type': {'id': -1, 'codeName': None, 'shortName': None, 'name': None},
                      'disc': {'id': -1, 'name': None},
                      'colors': {'foreground': None, 'background': None},
-                     'info': None
+                     'info': None,
+                     'requiresClearance': False
                      }
     if existenceCheck(lesson_note, 'Id'):
         newLessonNote['id'] = lesson_note['Id']
@@ -55,6 +56,8 @@ def optimizeLessonNote(lesson_note):
         newLessonNote['disc']['name'] = lesson_note['DiscName']
     if existenceCheck(lesson_note, 'ObservationInfo'):
         newLessonNote['info'] = lesson_note['ObservationInfo']
+    if existenceCheck(lesson_note, 'RequiresClearance'):
+        newLessonNote['requiresClearance'] = lesson_note['RequiresClearance']
     return newLessonNote
 
 

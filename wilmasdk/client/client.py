@@ -6,7 +6,7 @@ from wilmasdk.net.classes import *
 from wilmasdk.net.conf import CONFIG
 import json
 from wilmasdk.gen import apikey as keygen
-from wilmasdk.parser.optimizer import optimizeHomepage
+from wilmasdk.parser.optimizer import optimizeHomepage, optimize_dict_array, optimize_dict
 from wilmasdk.exception.exceptions import *
 import wilmasdk.parser.lessonotes
 
@@ -62,8 +62,9 @@ class WilmaAPIClient:
                 response = result.get_response().json()
                 if 'SessionID' in response and "ApiVersion" in response:
                     if response['ApiVersion'] < CONFIG['minimumapiversion']:
-                        return ErrorResult('Wilma server is too old to work with this library. Api Version '+str(CONFIG['minimumapiversion'])+' and '
-                                           'newer is supported')
+                        return ErrorResult('Wilma server is too old to work with this library. Api Version ' + str(
+                            CONFIG['minimumapiversion']) + ' and '
+                                                           'newer is supported')
                     return AuthSessionResult(response['SessionID'])
                 else:
                     return ErrorResult('Unable to get login information, are you sure this is Wilma server?')
@@ -88,6 +89,37 @@ class WilmaAPIClient:
 
                 else:
                     return ErrorResult("Homepage couldn't be parsed")
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
+    def getExcuseReasons(self):
+        try:
+            result = self.httpclient.authenticated_get_request('attendance?format=json')
+            if not result.is_error():
+                error_check = checkForWilmaError(result.get_response())
+                if error_check is not None:
+                    return error_check
+                response = result.get_response().json()
+                excuses = []
+                if "Excuses" in response:
+                    excuses = optimize_dict_array(response['Excuses'])
+                return ExcuseReasonsResult(excuses)
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
+    def getAbsenceReasons(self):
+        try:
+            result = self.httpclient.authenticated_get_request('attendance/report?format=json')
+            if not result.is_error():
+                error_check = checkForWilmaError(result.get_response())
+                if error_check is not None:
+                    return error_check
+                response = result.get_response().json()
+                return ExcuseReasonsResult(optimize_dict(response))
             else:
                 return result
         except Exception as e:

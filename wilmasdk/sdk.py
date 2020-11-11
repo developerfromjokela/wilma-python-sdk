@@ -42,6 +42,14 @@ class WilmaSDK:
         self.checkRequiredParams(True)
         return self.apiClient.getLessonNotes()
 
+    def getExcuseReasons(self):
+        self.checkRequiredParams(True)
+        return self.apiClient.getExcuseReasons()
+
+    def getAbsenceReasons(self):
+        self.checkRequiredParams(True)
+        return self.apiClient.getAbsenceReasons()
+
     def login(self, username, password, apikey):
         self.checkRequiredParams(False)
         sessionRequest = self.apiClient.getSession()

@@ -75,6 +75,20 @@ class LessonNotesResult(RequestResult):
         self.excuses_allowed = exuses_allowed
 
 
+class ExcuseReasonsResult(RequestResult):
+
+    def __init__(self, reasons):
+        super().__init__(False, None, None)
+        self.reasons = reasons
+
+
+class AbsenceReasonsResult(RequestResult):
+
+    def __init__(self, reasons):
+        super().__init__(False, None, None)
+        self.reasons = reasons
+
+
 class AuthSessionResult(RequestResult):
 
     def __init__(self, auth_session_d):
