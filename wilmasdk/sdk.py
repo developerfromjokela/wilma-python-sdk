@@ -38,6 +38,10 @@ class WilmaSDK:
         self.checkRequiredParams(True)
         return self.apiClient.getHomepage()
 
+    def getLessonNotes(self):
+        self.checkRequiredParams(True)
+        return self.apiClient.getLessonNotes()
+
     def login(self, username, password, apikey):
         self.checkRequiredParams(False)
         sessionRequest = self.apiClient.getSession()
