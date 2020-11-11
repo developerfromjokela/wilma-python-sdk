@@ -10,7 +10,6 @@ sdk = WilmaSDK()
 
 sdk.setWilmaServer("https://example.com")
 print("Checking fake")
-from .authdetails import WILMA_SETTINGS
 
 result = sdk.login("example", "example", "example")
 
