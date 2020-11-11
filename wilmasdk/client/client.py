@@ -47,7 +47,7 @@ class WilmaAPIClient:
         self.wilmasesson = session_id
 
     def setRole(self, role):
-        slug = role['Slug']
+        slug = role['slug']
         if self.wilmaserver is not None and self.wilmaserver[len(self.wilmaserver) - 1] is "/":
             slug = slug[1:]
         self.changeWilmaAddress(self.wilmaserver + slug)

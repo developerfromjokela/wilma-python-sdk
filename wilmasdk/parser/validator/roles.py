@@ -2,5 +2,5 @@
 #  @author developerfromjokela
 
 def validateRole(role):
-    requiredFields = ['Name', 'Type', 'PrimusId', 'FormKey', 'Photo']
+    requiredFields = ['name', 'type', 'primusId', 'formKey', 'photo']
     return all(name in role for name in requiredFields)

@@ -25,6 +25,23 @@ def convertType(type):
     return types[type]
 
 
+def optimize_dict(d):
+    new = {}
+    for k, v in d.items():
+        if isinstance(v, dict):
+            v = optimize_dict(v)
+        elif isinstance(v, list):
+            n = []
+            for i in v:
+                if isinstance(i, dict):
+                    n.append(optimize_dict(i))
+                else:
+                    n.append(i)
+            v = n
+        new[k[0].lower() + k[1:]] = v
+    return new
+
+
 def optimizeHomepage(homepage):
     if "Roles" in homepage:
         for role in homepage['Roles']:
@@ -37,7 +54,7 @@ def optimizeHomepage(homepage):
         homepage['Photo'] = base64ImageToPillow(homepage['Photo'])
     if "Type" in homepage:
         homepage['Type'] = convertType(homepage['Type'])
-    return homepage
+    return optimize_dict(homepage)
 
 
 def base64ImageToPillow(image):
