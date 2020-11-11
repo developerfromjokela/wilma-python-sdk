@@ -72,7 +72,7 @@ class LessonNotesResult(RequestResult):
     def __init__(self, lesson_notes, exuses_allowed):
         super().__init__(False, None, None)
         self.lesson_notes = lesson_notes
-        self.exuses_allowed = exuses_allowed
+        self.excuses_allowed = exuses_allowed
 
 
 class AuthSessionResult(RequestResult):

@@ -8,6 +8,7 @@ import json
 from wilmasdk.gen import apikey as keygen
 from wilmasdk.parser.optimizer import optimizeHomepage
 from wilmasdk.exception.exceptions import *
+import wilmasdk.parser.lessonotes
 
 reLoginErrors = ['common-20', 'common-18', 'common-15', 'common-34']
 
@@ -105,7 +106,7 @@ class WilmaAPIClient:
                 if allowSaveExcuse:
                     allowSaveExcuse = response['AllowSaveExcuse']
                 if "Observations" in response:
-                    obs = response['Observations']
+                    obs = wilmasdk.parser.lessonotes.optimizeLessonNotes(response['Observations'])
                 return LessonNotesResult(obs, allowSaveExcuse)
             else:
                 return result
