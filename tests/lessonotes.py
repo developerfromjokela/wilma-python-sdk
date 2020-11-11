@@ -51,3 +51,19 @@ else:
                     print("Type: " + str(homepage['type']))
     else:
         print("Roles not required, not selecting")
+
+    lessonNotes = sdk.getLessonNotes()
+    if lessonNotes.is_error():
+        if lessonNotes.get_wilma_error() is not None:
+            print(lessonNotes.get_wilma_error()['message'])
+            print("--> " + lessonNotes.get_wilma_error()['description'])
+        else:
+            print(lessonNotes.get_exception())
+    else:
+        print("Got lesson notes")
+        for note in lessonNotes.lesson_notes:
+            print(note)
+            print("-----")
+        print("Allowed to make excuses:")
+        print(lessonNotes.excuses_allowed)
+
