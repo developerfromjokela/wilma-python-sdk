@@ -113,6 +113,33 @@ class WilmaAPIClient:
         except Exception as e:
             return ErrorResult(e)
 
+    def markClearance(self, excuse, lesson_note_id, explanation=None):
+        try:
+            data = {
+                'item' + str(lesson_note_id): 'true',
+                'type': str(excuse['id']),
+                'format': 'json'
+            }
+            if excuse['explanationAllowed'] is True or ('requireText' in excuse and excuse['requireText'] is True):
+                if explanation is not None:
+                    data['text'] = explanation
+                else:
+                    return ErrorResult("Explanation missing, even though it's required")
+            result = self.httpclient.authenticated_post_request('attendance/saveexcuse', data, False)
+            if not result.is_error():
+                if result.get_response().status_code == 303:
+                    return ClearanceMarkResult()
+                else:
+                    error_check = checkForWilmaError(result.get_response())
+                    if error_check is not None:
+                        return error_check
+                    else:
+                        return ErrorResult("Something went wrong, unable to find errors")
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
     def getAbsenceReasons(self):
         try:
             result = self.httpclient.authenticated_get_request('attendance/report?format=json')

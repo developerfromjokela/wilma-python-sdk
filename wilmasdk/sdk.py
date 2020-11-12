@@ -4,6 +4,7 @@
 from wilmasdk.client.client import WilmaAPIClient
 from wilmasdk.net.classes import ErrorResult
 from wilmasdk.parser.validator.roles import validateRole
+from wilmasdk.parser.validator.excuses import validateExcuse
 
 
 class WilmaSDK:
@@ -49,6 +50,12 @@ class WilmaSDK:
     def getAbsenceReasons(self):
         self.checkRequiredParams(True)
         return self.apiClient.getAbsenceReasons()
+
+    def markClearance(self, excuse, lesson_note_id):
+        self.checkRequiredParams(True)
+        if not validateExcuse(excuse):
+            return ErrorResult("Excuse is not valid!")
+        return self.apiClient.markClearance(excuse, lesson_note_id)
 
     def login(self, username, password, apikey):
         self.checkRequiredParams(False)
