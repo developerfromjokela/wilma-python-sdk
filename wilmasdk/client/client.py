@@ -191,7 +191,7 @@ class WilmaAPIClient:
                     data['text'] = explanation
                 else:
                     return ErrorResult("Explanation missing, even though it's required")
-            result = self.httpclient.authenticated_post_request('attendance/saveexcuse', data, False)
+            result = self.httpclient.authenticated_post_request('attendance/savereport', data, False)
             if not result.is_error():
                 error_check = checkForWilmaError(result.get_response())
                 if error_check is not None:
