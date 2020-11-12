@@ -125,15 +125,29 @@ class WilmaAPIClient:
         except Exception as e:
             return ErrorResult(e)
 
+    def getFormKey(self):
+        result = self.getHomepage()
+        if result.is_error():
+            return result
+        else:
+            if 'formKey' in result.homepage:
+                return FormKeyResult(result.homepage['formKey'])
+            else:
+                return ErrorResult("Unable to obtain formKey")
+
     """
     Marks clearance on lesson note, or as visma calls this operation: saving an excuse
     """
 
     def markClearance(self, excuse: dict, lesson_note_id: int, explanation: str = None):
         try:
+            formKeyResult = self.getFormKey()
+            if formKeyResult.is_error():
+                return formKeyResult
             data = {
                 'item' + str(lesson_note_id): 'true',
                 'type': str(excuse['id']),
+                'formkey': formKeyResult.form_key,
                 'format': 'json'
             }
             if excuse['explanationAllowed'] is True or ('requireText' in excuse and excuse['requireText'] is True):

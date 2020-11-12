@@ -59,6 +59,13 @@ class LogoutResult(RequestResult):
         super().__init__(False, None, None)
 
 
+class FormKeyResult(RequestResult):
+
+    def __init__(self, form_key):
+        super().__init__(False, None, None)
+        self.form_key = form_key
+
+
 class HomepageResult(RequestResult):
 
     def __init__(self, homepage, roleSelectionRequired):
