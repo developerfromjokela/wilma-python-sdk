@@ -102,6 +102,7 @@ class WilmaAPIClient:
                 if error_check is not None:
                     return error_check
                 response = result.get_response().json()
+                # When excuses are missing, it means that you don't have any lesson note to do clearance on
                 if "Excuses" in response:
                     excuses = optimize_dict_array(response['Excuses'])
                     return ExcuseReasonsResult(excuses)
