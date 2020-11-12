@@ -38,15 +38,27 @@ class WilmaAPIClient:
         self.wilmasesson = wilmasession
         self.httpclient = httpclient.WilmaHttpClient(wilmasession, wilmaserver)
 
-    def changeWilmaAddress(self, server):
+    """
+    If server URL needs an change, this is for that
+    """
+
+    def changeWilmaAddress(self, server: str):
         self.httpclient.set_wilma_url(server)
         self.wilmaserver = self.httpclient.baseUrl
+
+    """
+    Sets Session ID cookie
+    """
 
     def setSession(self, session_id):
         self.httpclient.user_auth = session_id
         self.wilmasesson = session_id
 
-    def setRole(self, role):
+    """
+    Saves role selection if required
+    """
+
+    def setRole(self, role: dict):
         slug = role['slug']
         if self.wilmaserver is not None and self.wilmaserver[len(self.wilmaserver) - 1] is "/":
             slug = slug[1:]
@@ -113,7 +125,11 @@ class WilmaAPIClient:
         except Exception as e:
             return ErrorResult(e)
 
-    def markClearance(self, excuse, lesson_note_id, explanation=None):
+    """
+    Marks clearance on lesson note, or as visma calls this operation: saving an excuse
+    """
+
+    def markClearance(self, excuse: dict, lesson_note_id: int, explanation: str = None):
         try:
             data = {
                 'item' + str(lesson_note_id): 'true',
@@ -207,7 +223,7 @@ class WilmaAPIClient:
         except Exception as e:
             return ErrorResult(e)
 
-    def login(self, username, password, session_id, apikey):
+    def login(self, username: str, password: str, session_id: str, apikey: str):
         try:
             apikey = keygen.generate_apikey(username=username, session_id=session_id, apikey=apikey)
             data = {

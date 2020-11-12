@@ -51,11 +51,11 @@ class WilmaSDK:
         self.checkRequiredParams(True)
         return self.apiClient.getAbsenceReasons()
 
-    def markClearance(self, excuse, lesson_note_id):
+    def markClearance(self, excuse, lesson_note_id, reason=None):
         self.checkRequiredParams(True)
         if not validateExcuse(excuse):
             return ErrorResult("Excuse is not valid!")
-        return self.apiClient.markClearance(excuse, lesson_note_id)
+        return self.apiClient.markClearance(excuse, lesson_note_id, reason)
 
     def login(self, username, password, apikey):
         self.checkRequiredParams(False)
