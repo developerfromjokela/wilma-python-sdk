@@ -9,6 +9,7 @@ from wilmasdk.gen import apikey as keygen
 from wilmasdk.parser.optimizer import optimizeHomepage, optimize_dict_array, optimize_dict
 from wilmasdk.exception.exceptions import *
 import wilmasdk.parser.lessonotes
+import wilmasdk.parser.exams
 from wilmasdk.parser.lessonotes import optimizeAbsenceInfo
 
 reLoginErrors = ['common-20', 'common-18', 'common-15', 'common-34']
@@ -231,6 +232,23 @@ class WilmaAPIClient:
                 if "Observations" in response:
                     obs = wilmasdk.parser.lessonotes.optimizeLessonNotes(response['Observations'])
                 return LessonNotesResult(obs, allowSaveExcuse)
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
+    def getExams(self):
+        try:
+            result = self.httpclient.authenticated_get_request('exams/index_json')
+            if not result.is_error():
+                error_check = checkForWilmaError(result.get_response())
+                if error_check is not None:
+                    return error_check
+                response = result.get_response().json()
+                exams = []
+                if "Exams" in response:
+                    exams = wilmasdk.parser.exams.optimizeExams(response['Exams'])
+                return ExamsResult(exams)
             else:
                 return result
         except Exception as e:

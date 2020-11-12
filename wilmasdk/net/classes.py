@@ -82,6 +82,13 @@ class LessonNotesResult(RequestResult):
         self.excuses_allowed = exuses_allowed
 
 
+class ExamsResult(RequestResult):
+
+    def __init__(self, exams):
+        super().__init__(False, None, None)
+        self.exams = exams
+
+
 class ExcuseReasonsResult(RequestResult):
 
     def __init__(self, reasons):

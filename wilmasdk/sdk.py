@@ -43,6 +43,10 @@ class WilmaSDK:
         self.checkRequiredParams(True)
         return self.apiClient.getLessonNotes()
 
+    def getExams(self):
+        self.checkRequiredParams(True)
+        return self.apiClient.getExams()
+
     def getExcuseReasons(self):
         self.checkRequiredParams(True)
         return self.apiClient.getExcuseReasons()
