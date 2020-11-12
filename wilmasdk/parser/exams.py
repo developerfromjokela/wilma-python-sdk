@@ -16,7 +16,7 @@ Visma! Write that down! Write that down!
 
 
 def optimizeExam(exam):
-    newExam = {'id': -1, 'examId': -1, 'name': None, 'date': None, 'info': None,
+    newExam = {'id': -1, 'examId': -1, 'name': None, 'date': None, 'info': None, 'unseen': False,
                'course': {'id': -1, 'shortName': None, 'name': None, 'teachers': []},
                'grade': {'grade': None, 'verbal': None}}
     if existenceCheck(exam, 'Id'):
@@ -34,6 +34,8 @@ def optimizeExam(exam):
             newExam['course']['teachers'].append(optimizeTeacher(teacher))
     if existenceCheck(exam, 'Name'):
         newExam['name'] = exam['Name']
+    if existenceCheck(exam, 'Unseen'):
+        newExam['unseen'] = exam['Unseen']
     if existenceCheck(exam, 'Info'):
         newExam['info'] = bs4.BeautifulSoup(exam['Info'], 'html.parser').text
     if existenceCheck(exam, 'Date'):
@@ -54,7 +56,7 @@ def optimizeExams(exams):
     newExams = []
     for exam in exams:
         newExams.append(optimizeExam(exam))
-    return exams
+    return newExams
 
 
 def optimizeTeacher(teacher):
