@@ -47,6 +47,14 @@ class WilmaSDK:
         self.checkRequiredParams(True)
         return self.apiClient.getExams()
 
+    def getGroups(self):
+        self.checkRequiredParams(True)
+        return self.apiClient.getGroups()
+
+    def getGroup(self, group_id: int):
+        self.checkRequiredParams(True)
+        return self.apiClient.getGroup(group_id)
+
     def getExcuseReasons(self):
         self.checkRequiredParams(True)
         return self.apiClient.getExcuseReasons()

@@ -10,6 +10,7 @@ from wilmasdk.parser.optimizer import optimizeHomepage, optimize_dict_array, opt
 from wilmasdk.exception.exceptions import *
 import wilmasdk.parser.lessonotes
 import wilmasdk.parser.exams
+import wilmasdk.parser.groups
 from wilmasdk.parser.lessonotes import optimizeAbsenceInfo
 
 reLoginErrors = ['common-20', 'common-18', 'common-15', 'common-34']
@@ -249,6 +250,41 @@ class WilmaAPIClient:
                 if "Exams" in response:
                     exams = wilmasdk.parser.exams.optimizeExams(response['Exams'])
                 return ExamsResult(exams)
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
+    def getGroups(self):
+        try:
+            result = self.httpclient.authenticated_get_request('groups/index_json')
+            if not result.is_error():
+                error_check = checkForWilmaError(result.get_response())
+                if error_check is not None:
+                    return error_check
+                response = result.get_response().json()
+                groups = []
+                if "Groups" in response:
+                    groups = wilmasdk.parser.groups.optimizeGroups(response['Groups'])
+                return GroupsResult(groups)
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
+    def getGroup(self, group_id: int):
+        try:
+            result = self.httpclient.authenticated_get_request('groups/index_json/' + str(group_id))
+            if not result.is_error():
+                error_check = checkForWilmaError(result.get_response())
+                if error_check is not None:
+                    return error_check
+                response = result.get_response().json()
+                if "Groups" in response and len(response['Groups']) > 0:
+                    group = wilmasdk.parser.groups.optimizeGroup(response['Groups'][0])
+                    return GroupResult(group)
+                else:
+                    return ErrorResult("Group not found")
             else:
                 return result
         except Exception as e:

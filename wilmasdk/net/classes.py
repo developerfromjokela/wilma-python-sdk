@@ -89,6 +89,20 @@ class ExamsResult(RequestResult):
         self.exams = exams
 
 
+class GroupsResult(RequestResult):
+
+    def __init__(self, groups):
+        super().__init__(False, None, None)
+        self.groups = groups
+
+
+class GroupResult(RequestResult):
+
+    def __init__(self, group):
+        super().__init__(False, None, None)
+        self.group = group
+
+
 class ExcuseReasonsResult(RequestResult):
 
     def __init__(self, reasons):
