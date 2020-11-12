@@ -9,6 +9,7 @@ from wilmasdk.gen import apikey as keygen
 from wilmasdk.parser.optimizer import optimizeHomepage, optimize_dict_array, optimize_dict
 from wilmasdk.exception.exceptions import *
 import wilmasdk.parser.lessonotes
+from wilmasdk.parser.lessonotes import optimizeAbsenceInfo
 
 reLoginErrors = ['common-20', 'common-18', 'common-15', 'common-34']
 
@@ -170,6 +171,37 @@ class WilmaAPIClient:
         except Exception as e:
             return ErrorResult(e)
 
+    """
+    Marks absence for student
+    """
+
+    def markAbsence(self, excuse: dict, report_date: int, explanation: str = None):
+        try:
+            formKeyResult = self.getFormKey()
+            if formKeyResult.is_error():
+                return formKeyResult
+            data = {
+                'ReportDate': str(report_date),
+                'type': str(excuse['id']),
+                'formkey': formKeyResult.form_key,
+                'format': 'json'
+            }
+            if excuse['explanationAllowed'] is True or ('requireText' in excuse and excuse['requireText'] is True):
+                if explanation is not None:
+                    data['text'] = explanation
+                else:
+                    return ErrorResult("Explanation missing, even though it's required")
+            result = self.httpclient.authenticated_post_request('attendance/saveexcuse', data, False)
+            if not result.is_error():
+                error_check = checkForWilmaError(result.get_response())
+                if error_check is not None:
+                    return error_check
+                return AbsenceMarkResult()
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
     def getAbsenceReasons(self):
         try:
             result = self.httpclient.authenticated_get_request('attendance/report?format=json')
@@ -178,7 +210,7 @@ class WilmaAPIClient:
                 if error_check is not None:
                     return error_check
                 response = result.get_response().json()
-                return ExcuseReasonsResult(optimize_dict(response))
+                return ExcuseReasonsResult(optimize_dict(optimizeAbsenceInfo(response)))
             else:
                 return result
         except Exception as e:

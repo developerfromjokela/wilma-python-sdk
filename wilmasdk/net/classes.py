@@ -102,6 +102,12 @@ class ClearanceMarkResult(RequestResult):
         super().__init__(False, None, None)
 
 
+class AbsenceMarkResult(RequestResult):
+
+    def __init__(self):
+        super().__init__(False, None, None)
+
+
 class AuthSessionResult(RequestResult):
 
     def __init__(self, auth_session_d):

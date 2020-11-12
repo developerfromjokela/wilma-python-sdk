@@ -66,3 +66,8 @@ def optimizeLessonNotes(lesson_notes):
     for lessonNote in lesson_notes:
         newLessonNotes.append(optimizeLessonNote(lessonNote))
     return newLessonNotes
+
+
+def optimizeAbsenceInfo(absence_info):
+    absence_info['available'] = (absence_info['ReportDate'] != 0)
+    return absence_info

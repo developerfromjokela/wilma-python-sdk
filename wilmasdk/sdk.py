@@ -57,6 +57,13 @@ class WilmaSDK:
             return ErrorResult("Excuse is not valid!")
         return self.apiClient.markClearance(excuse, lesson_note_id, reason)
 
+    def markAbsence(self, excuse: dict, report_date: int, reason: str = None):
+        self.checkRequiredParams(True)
+        # Validating excuse, because its type is identical to absence's one
+        if not validateExcuse(excuse):
+            return ErrorResult("Absence is not valid!")
+        return self.apiClient.markAbsence(excuse, report_date, reason)
+
     def login(self, username, password, apikey):
         self.checkRequiredParams(False)
         sessionRequest = self.apiClient.getSession()
