@@ -62,6 +62,5 @@ else:
     else:
         print("Got absence reasons")
         for reason in lessonNotes.reasons['excuses']:
-            print(reason)
-            print("-----")
+            print(" " + str(reason['id']) + " --> " + reason['caption'])
 
