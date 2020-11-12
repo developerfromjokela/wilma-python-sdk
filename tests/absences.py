@@ -52,7 +52,8 @@ else:
     else:
         print("Roles not required, not selecting")
 
-    lessonNotes = sdk.getAbsenceReasons()
+    print("Fetching lesson notes")
+    lessonNotes = sdk.getLessonNotes()
     if lessonNotes.is_error():
         if lessonNotes.get_wilma_error() is not None:
             print(lessonNotes.get_wilma_error()['message'])
@@ -60,7 +61,56 @@ else:
         else:
             print(lessonNotes.get_exception())
     else:
+        if not lessonNotes.excuses_allowed:
+            print("You're not allowed to mark absences!")
+            exit(-1)
+
+    absenceReasons = sdk.getAbsenceReasons()
+    if absenceReasons.is_error():
+        if absenceReasons.get_wilma_error() is not None:
+            print(absenceReasons.get_wilma_error()['message'])
+            print("--> " + absenceReasons.get_wilma_error()['description'])
+        else:
+            print(absenceReasons.get_exception())
+    else:
         print("Got absence reasons")
-        for reason in lessonNotes.reasons['excuses']:
+        if not absenceReasons.reasons['available']:
+            print("Absence marking not available at the moment: ")
+            print(absenceReasons.reasons['DateMessage'])
+            exit(-1)
+        for reason in absenceReasons.reasons['excuses']:
             print(" " + str(reason['id']) + " --> " + reason['caption'])
 
+        num = input("Enter number: \n")
+        numInt = int(num)
+        itemExists = any(item['id'] == numInt for item in absenceReasons.reasons['excuses'])
+        if itemExists is False:
+            print("Invalid number!")
+            exit(-1)
+        else:
+            itemPos = (item['id'] == numInt for item in absenceReasons.reasons['excuses'])
+            item = None
+            for i, res in enumerate(list(itemPos)):
+                if res is True:
+                    item = absenceReasons.reasons['excuses'][i]
+            if item is None:
+                print("Item not found")
+            else:
+                print("Marking absence")
+                text = None
+                if ('requireText' in item and item['requireText'] is True) or (
+                        'explanationAllowed' in item and item['explanationAllowed'] is True):
+                    text = input("This type requires you to type reason: \n")
+                    if len(text) < 1:
+                        print("Text is too short!")
+                        exit(-1)
+                    print("Continuing marking absence")
+                result = sdk.markAbsence(item, absenceReasons.reasons['reportDate'], text)
+                if result.is_error():
+                    if result.get_wilma_error() is not None:
+                        print(result.get_wilma_error()['message'])
+                        print("--> " + result.get_wilma_error()['description'])
+                    else:
+                        print(result.get_exception())
+                else:
+                    print("Success!")
