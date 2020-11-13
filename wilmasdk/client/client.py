@@ -11,6 +11,7 @@ from wilmasdk.exception.exceptions import *
 import wilmasdk.parser.lessonotes
 import wilmasdk.parser.exams
 import wilmasdk.parser.groups
+import wilmasdk.parser.news
 from wilmasdk.parser.lessonotes import optimizeAbsenceInfo
 
 reLoginErrors = ['common-20', 'common-18', 'common-15', 'common-34']
@@ -267,6 +268,41 @@ class WilmaAPIClient:
                 if "Groups" in response:
                     groups = wilmasdk.parser.groups.optimizeGroups(response['Groups'])
                 return GroupsResult(groups)
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
+    def getAnnouncements(self):
+        try:
+            result = self.httpclient.authenticated_get_request('news/index_json')
+            if not result.is_error():
+                error_check = checkForWilmaError(result.get_response())
+                if error_check is not None:
+                    return error_check
+                response = result.get_response().json()
+                news = []
+                if "News" in response:
+                    news = wilmasdk.parser.news.optimizeNews(response['News'])
+                return AnnouncementsResult(news)
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
+    def getAnnouncement(self, announcement_id: int):
+        try:
+            result = self.httpclient.authenticated_get_request('news/index_json/' + str(announcement_id))
+            if not result.is_error():
+                error_check = checkForWilmaError(result.get_response())
+                if error_check is not None:
+                    return error_check
+                response = result.get_response().json()
+                if "News" in response and len(response['News']) > 0:
+                    announcement = wilmasdk.parser.news.optimizeNew(response['News'][0])
+                    return AnnouncementResult(announcement)
+                else:
+                    return ErrorResult("Announcement not found")
             else:
                 return result
         except Exception as e:

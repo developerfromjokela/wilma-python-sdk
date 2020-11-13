@@ -96,11 +96,25 @@ class GroupsResult(RequestResult):
         self.groups = groups
 
 
+class AnnouncementsResult(RequestResult):
+
+    def __init__(self, news):
+        super().__init__(False, None, None)
+        self.announcements = news
+
+
 class GroupResult(RequestResult):
 
     def __init__(self, group):
         super().__init__(False, None, None)
         self.group = group
+
+
+class AnnouncementResult(RequestResult):
+
+    def __init__(self, announcement):
+        super().__init__(False, None, None)
+        self.announcement = announcement
 
 
 class ExcuseReasonsResult(RequestResult):
