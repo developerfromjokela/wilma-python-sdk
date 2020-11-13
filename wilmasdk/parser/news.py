@@ -25,7 +25,7 @@ def optimizeNew(new):
     if existenceCheck(new, 'EndDate'):
         newNew['limit']['end'] = parseDate(new['EndDate'], '%Y-%m-%d')
     if existenceCheck(new, 'Created'):
-        newNew['limit']['created'] = parseDate(new['Created'], '%Y-%m-%d %H:%M')
+        newNew['created'] = parseDate(new['Created'], '%Y-%m-%d %H:%M')
     if existenceCheck(new, 'ContentHtml'):
         newNew['content']['html'] = new['ContentHtml']
         newNew['content']['test'] = bs4.BeautifulSoup(new['ContentHtml'], 'html.parser').text
