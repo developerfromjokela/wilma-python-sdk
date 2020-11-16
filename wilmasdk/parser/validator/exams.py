@@ -3,4 +3,4 @@
 
 def validateExam(exam):
     requiredFields = ['id', 'examId']
-    return all(name in excuse for name in requiredFields)
+    return all(name in exam for name in requiredFields)
