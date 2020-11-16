@@ -260,7 +260,7 @@ class WilmaAPIClient:
                 # yes, this request has different Error format, Vismaaa!
                 response = result.get_response().json()
                 if 'Success' in response and 'Message' in response:
-                    if result.get_response()['Success'] is True:
+                    if response['Success'] is True:
                         return ExamSeenResult()
                     else:
                         return ErrorResult(response['Message'])
