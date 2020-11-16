@@ -46,10 +46,10 @@ class WilmaServersResult(RequestResult):
 
 class LoginResult(RequestResult):
 
-    def __init__(self, session, roleSelectionRequired, homepage):
+    def __init__(self, session, role_selection_required, homepage):
         super().__init__(False, None, None)
         self.session = session
-        self.roleSelectionRequired = roleSelectionRequired
+        self.roleSelectionRequired = role_selection_required
         self.homepage = homepage
 
 
@@ -68,10 +68,10 @@ class FormKeyResult(RequestResult):
 
 class HomepageResult(RequestResult):
 
-    def __init__(self, homepage, roleSelectionRequired):
+    def __init__(self, homepage, role_selection_required):
         super().__init__(False, None, None)
         self.homepage = homepage
-        self.roleSelectionRequired = roleSelectionRequired
+        self.roleSelectionRequired = role_selection_required
 
 
 class LessonNotesResult(RequestResult):
@@ -89,6 +89,12 @@ class ExamsResult(RequestResult):
         self.exams = exams
 
 
+class ExamSeenResult(RequestResult):
+
+    def __init__(self):
+        super().__init__(False, None, None)
+
+
 class GroupsResult(RequestResult):
 
     def __init__(self, groups):
@@ -101,6 +107,13 @@ class AnnouncementsResult(RequestResult):
     def __init__(self, news):
         super().__init__(False, None, None)
         self.announcements = news
+
+
+class ScheduleResult(RequestResult):
+
+    def __init__(self, schedule):
+        super().__init__(False, None, None)
+        self.schedule = schedule
 
 
 class GroupResult(RequestResult):

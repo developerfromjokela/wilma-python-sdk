@@ -17,6 +17,7 @@ Visma! Write that down! Write that down!
 
 def optimizeExam(exam):
     newExam = {'id': -1, 'examId': -1, 'name': None, 'date': None, 'info': None, 'unseen': False,
+               'seenOn': None,
                'course': {'id': -1, 'shortName': None, 'name': None, 'teachers': []},
                'grade': {'grade': None, 'verbal': None}}
     if existenceCheck(exam, 'Id'):
@@ -40,6 +41,8 @@ def optimizeExam(exam):
         newExam['info'] = bs4.BeautifulSoup(exam['Info'], 'html.parser').text
     if existenceCheck(exam, 'Date'):
         newExam['date'] = datetime.datetime.strptime(exam['Date'], '%Y-%m-%d')
+    if existenceCheck(exam, 'ExamSeen'):
+        newExam['seenOn'] = datetime.datetime.strptime(exam['ExamSeen'], '%Y-%m-%d')
     if existenceCheck(exam, 'Grade'):
         newExam['grade']['grade'] = exam['Grade']
     if existenceCheck(exam, 'VerbalGrade'):

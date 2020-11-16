@@ -240,6 +240,36 @@ class WilmaAPIClient:
         except Exception as e:
             return ErrorResult(e)
 
+    """
+    Marks exam(s) as seen, multiple exams could be included in one request
+    """
+
+    def markExamAsSeen(self, exams):
+        try:
+            formKeyResult = self.getFormKey()
+            if formKeyResult.is_error():
+                return formKeyResult
+            data = [('formkey', formKeyResult.form_key), ('format', 'json')]
+            for exam in exams:
+                data.append(('mid', exam['id']+"-"+exam['examId']))
+            result = self.httpclient.authenticated_post_request('exams/seen', data, False)
+            if not result.is_error():
+                error_check = checkForWilmaError(result.get_response())
+                if error_check is not None:
+                    return error_check
+                # yes, this request has different Error format, Vismaaa!
+                if 'Success' in result.get_response() and 'Message' in result.get_response():
+                    if result.get_response()['Success'] is True:
+                        return ExamSeenResult()
+                    else:
+                        return ErrorResult(result.get_response()['Message'])
+                else:
+                    return ErrorResult("Unknown response, unable to handle: "+result.get_response())
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
     def getExams(self):
         try:
             result = self.httpclient.authenticated_get_request('exams/index_json')
