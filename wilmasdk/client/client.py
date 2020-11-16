@@ -258,11 +258,12 @@ class WilmaAPIClient:
                 if error_check is not None:
                     return error_check
                 # yes, this request has different Error format, Vismaaa!
-                if 'Success' in result.get_response() and 'Message' in result.get_response():
+                response = result.get_response().json()
+                if 'Success' in response and 'Message' in response:
                     if result.get_response()['Success'] is True:
                         return ExamSeenResult()
                     else:
-                        return ErrorResult(result.get_response()['Message'])
+                        return ErrorResult(response['Message'])
                 else:
                     return ErrorResult("Unknown response, unable to handle: "+result.get_response().text)
             else:
