@@ -251,7 +251,7 @@ class WilmaAPIClient:
                 return formKeyResult
             data = [('formkey', formKeyResult.form_key), ('format', 'json')]
             for exam in exams:
-                data.append(('mid', exam['id']+"-"+exam['examId']))
+                data.append(('mid', str(exam['id'])+"-"+str(exam['examId'])))
             result = self.httpclient.authenticated_post_request('exams/seen', data, False)
             if not result.is_error():
                 error_check = checkForWilmaError(result.get_response())
