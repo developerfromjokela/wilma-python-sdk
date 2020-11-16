@@ -65,6 +65,21 @@ def optimizeHomepage(homepage):
     return optimize_dict(homepage)
 
 
+def optimizeMessages(messages):
+    ...
+
+
+def optimizeMessage(message):
+    newMessage = {
+        'id': -1, 'subject': None, 'timestamp': None, 'folder': None,
+        'sender': {'id': -1, 'type': None, 'name': None},
+        'recipients': [],
+        'content': None,
+        'replies': [],
+        'replyAllowed': False
+    }
+
+
 def base64ImageToPillow(image):
     msg = base64.b64decode(image)
     buf = io.BytesIO(msg)
