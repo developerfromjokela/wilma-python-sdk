@@ -80,6 +80,10 @@ def optimizeMessage(message):
     }
 
 
+def optimizeReply(reply):
+    ...
+
+
 def base64ImageToPillow(image):
     msg = base64.b64decode(image)
     buf = io.BytesIO(msg)
