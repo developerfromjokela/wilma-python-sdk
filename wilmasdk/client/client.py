@@ -252,7 +252,7 @@ class WilmaAPIClient:
             data = [('formkey', formKeyResult.form_key), ('format', 'json')]
             for exam in exams:
                 data.append(('mid', str(exam['id'])+"-"+str(exam['examId'])))
-            result = self.httpclient.authenticated_post_request('exams/seen', data, False)
+            result = self.httpclient.authenticated_post_request('exams/seen', data)
             if not result.is_error():
                 error_check = checkForWilmaError(result.get_response())
                 if error_check is not None:
@@ -264,7 +264,7 @@ class WilmaAPIClient:
                     else:
                         return ErrorResult(result.get_response()['Message'])
                 else:
-                    return ErrorResult("Unknown response, unable to handle: "+result.get_response())
+                    return ErrorResult("Unknown response, unable to handle: "+result.get_response().text)
             else:
                 return result
         except Exception as e:
