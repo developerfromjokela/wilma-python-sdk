@@ -105,10 +105,22 @@ def optimizeMessage(message):
         newMessage['recipients'] = message['Recipients']
     if existenceCheck(message, "TimeStamp"):
         newMessage['timestamp'] = parseMessageTimestamp(message['TimeStamp'])
+    if existenceCheck(message, "SenderId"):
+        newMessage['sender']['id'] = message['SenderId']
+    if existenceCheck(message, "SenderType"):
+        newMessage['sender']['type'] = convertType(message['SenderType'])
+    if existenceCheck(message, "Sender"):
+        newMessage['sender']['name'] = message['Sender']
+    if existenceCheck(message, "AllowCollatedReply"):
+        newMessage['replyAllowed'] = message['AllowCollatedReply']
+    if existenceCheck(message, "ContentHtml"):
+        newMessage['content'] = message['ContentHtml']
+    if existenceCheck(message, "ReplyList"):
+        ...
 
 
 def optimizeReply(reply):
-    newReply = {'id': None, 'content': {'text': None, 'html': None}, 'timestamp': None,
+    newReply = {'id': None, 'content': None, 'timestamp': None,
                 'sender': {'id': -1, 'type': None, 'name': None}}
 
 
