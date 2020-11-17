@@ -3,6 +3,7 @@
 from PIL import Image
 import base64
 import io
+import datetime
 
 """
 Does several things:
@@ -21,8 +22,23 @@ types = {
 }
 
 
+def existenceCheck(dist_item, key):
+    return key in dist_item and dist_item[key] is not None
+
+
 def convertType(type):
     return types[type]
+
+
+def parseMessageTimestamp(string_time):
+    try:
+        return datetime.datetime.strptime(string_time, "%Y-%m-%d %H-%M-%S")
+    except:
+        # Checking if the format is another one, because visma's api does so at midnight
+        try:
+            return datetime.datetime.strptime(string_time, "%Y-%m-%d")
+        except:
+            return None
 
 
 def optimize_dict(d):
@@ -69,6 +85,7 @@ def optimizeMessages(messages):
     ...
 
 
+# incomplete
 def optimizeMessage(message):
     newMessage = {
         'id': -1, 'subject': None, 'timestamp': None, 'folder': None,
@@ -78,10 +95,21 @@ def optimizeMessage(message):
         'replies': [],
         'replyAllowed': False
     }
+    if existenceCheck(message, "Id"):
+        newMessage['id'] = message['Id']
+    if existenceCheck(message, "Subject"):
+        newMessage['subject'] = message['Subject']
+    if existenceCheck(message, "Folder"):
+        newMessage['folder'] = message['Folder']
+    if existenceCheck(message, "Recipients"):
+        newMessage['recipients'] = message['Recipients']
+    if existenceCheck(message, "TimeStamp"):
+        newMessage['timestamp'] = parseMessageTimestamp(message['TimeStamp'])
 
 
 def optimizeReply(reply):
-    ...
+    newReply = {'id': None, 'content': {'text': None, 'html': None}, 'timestamp': None,
+                'sender': {'id': -1, 'type': None, 'name': None}}
 
 
 def base64ImageToPillow(image):
