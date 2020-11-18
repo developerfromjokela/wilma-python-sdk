@@ -81,11 +81,6 @@ def optimizeHomepage(homepage):
     return optimize_dict(homepage)
 
 
-def optimizeMessages(messages):
-    ...
-
-
-# incomplete
 def optimizeMessage(message):
     newMessage = {
         'id': -1, 'subject': None, 'timestamp': None, 'folder': None,
@@ -116,12 +111,33 @@ def optimizeMessage(message):
     if existenceCheck(message, "ContentHtml"):
         newMessage['content'] = message['ContentHtml']
     if existenceCheck(message, "ReplyList"):
-        ...
+        for reply in message['ReplyList']:
+            newMessage['replies'].append(optimizeReply(reply))
+    return newMessage
+
+
+def optimizeMessages(messages):
+    newMessages = []
+    for item in messages:
+        newMessages.append(optimizeMessage(item))
+    return newMessages
 
 
 def optimizeReply(reply):
     newReply = {'id': None, 'content': None, 'timestamp': None,
                 'sender': {'id': -1, 'type': None, 'name': None}}
+    if existenceCheck(reply, "Id"):
+        newReply['id'] = reply['Id']
+    if existenceCheck(reply, "ContentHtml"):
+        newReply['content'] = reply['ContentHtml']
+    if existenceCheck(reply, "TimeStamp"):
+        newReply['timestamp'] = parseMessageTimestamp(reply['TimeStamp'])
+    if existenceCheck(reply, "SenderId"):
+        newReply['sender']['id'] = reply['SenderId']
+    if existenceCheck(reply, "SenderType"):
+        newReply['sender']['type'] = convertType(reply['SenderType'])
+    if existenceCheck(reply, "Sender"):
+        newReply['sender']['name'] = reply['Sender']
 
 
 def base64ImageToPillow(image):
