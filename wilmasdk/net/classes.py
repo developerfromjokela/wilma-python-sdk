@@ -96,6 +96,13 @@ class MessagesResult(RequestResult):
         self.messages = messages
 
 
+class MessageResult(RequestResult):
+
+    def __init__(self, message):
+        super().__init__(False, None, None)
+        self.message = message
+
+
 class ExamSeenResult(RequestResult):
 
     def __init__(self):

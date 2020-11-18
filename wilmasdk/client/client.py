@@ -296,10 +296,28 @@ class WilmaAPIClient:
                 if error_check is not None:
                     return error_check
                 response = result.get_response().json()
-                exams = []
+                messages = []
                 if "Messages" in response:
-                    exams = wilmasdk.parser.optimizer.optimizeMessages(response['Messages'])
-                return MessagesResult(exams)
+                    messages = wilmasdk.parser.optimizer.optimizeMessages(response['Messages'])
+                return MessagesResult(messages)
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
+    def getMessage(self, message_id: int):
+        try:
+            result = self.httpclient.authenticated_get_request('messages/index_json/' + str(message_id))
+            if not result.is_error():
+                error_check = checkForWilmaError(result.get_response())
+                if error_check is not None:
+                    return error_check
+                response = result.get_response().json()
+                if "messages" in response and len(response['messages']) > 0:
+                    message = wilmasdk.parser.optimizer.optimizeMessage(response['messages'][0])
+                    return MessageResult(message)
+                else:
+                    return ErrorResult("Message not found")
             else:
                 return result
         except Exception as e:
