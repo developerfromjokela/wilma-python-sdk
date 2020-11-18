@@ -52,6 +52,10 @@ class WilmaSDK:
         self.checkRequiredParams(True)
         return self.apiClient.getGroups()
 
+    def getMessages(self):
+        self.checkRequiredParams(True)
+        return self.apiClient.getMessages()
+
     def getGroup(self, group_id: int):
         self.checkRequiredParams(True)
         return self.apiClient.getGroup(group_id)

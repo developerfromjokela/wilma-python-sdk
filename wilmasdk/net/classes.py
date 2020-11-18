@@ -89,6 +89,13 @@ class ExamsResult(RequestResult):
         self.exams = exams
 
 
+class MessagesResult(RequestResult):
+
+    def __init__(self, messages):
+        super().__init__(False, None, None)
+        self.messages = messages
+
+
 class ExamSeenResult(RequestResult):
 
     def __init__(self):

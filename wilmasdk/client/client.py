@@ -251,7 +251,7 @@ class WilmaAPIClient:
                 return formKeyResult
             data = [('formkey', formKeyResult.form_key), ('format', 'json')]
             for exam in exams:
-                data.append(('mid', str(exam['id'])+"-"+str(exam['examId'])))
+                data.append(('mid', str(exam['id']) + "-" + str(exam['examId'])))
             result = self.httpclient.authenticated_post_request('exams/seen', data)
             if not result.is_error():
                 error_check = checkForWilmaError(result.get_response())
@@ -265,7 +265,7 @@ class WilmaAPIClient:
                     else:
                         return ErrorResult(response['Message'])
                 else:
-                    return ErrorResult("Unknown response, unable to handle: "+result.get_response().text)
+                    return ErrorResult("Unknown response, unable to handle: " + result.get_response().text)
             else:
                 return result
         except Exception as e:
@@ -283,6 +283,23 @@ class WilmaAPIClient:
                 if "Exams" in response:
                     exams = wilmasdk.parser.exams.optimizeExams(response['Exams'])
                 return ExamsResult(exams)
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
+    def getMessages(self):
+        try:
+            result = self.httpclient.authenticated_get_request('messages/index_json/all')
+            if not result.is_error():
+                error_check = checkForWilmaError(result.get_response())
+                if error_check is not None:
+                    return error_check
+                response = result.get_response().json()
+                exams = []
+                if "Messages" in response:
+                    exams = wilmasdk.parser.optimizer.optimizeMessages(response['Messages'])
+                return MessagesResult(exams)
             else:
                 return result
         except Exception as e:
