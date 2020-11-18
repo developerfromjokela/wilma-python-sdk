@@ -32,7 +32,7 @@ def convertType(type):
 
 def parseMessageTimestamp(string_time):
     try:
-        return datetime.datetime.strptime(string_time, "%Y-%m-%d %H:%M:%S")
+        return datetime.datetime.strptime(string_time, "%Y-%m-%d %H:%M")
     except:
         # Checking if the format is another one, because visma's api does so at midnight
         try:
