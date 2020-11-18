@@ -6,4 +6,4 @@ Library is currently in construction, not ready (yet).
 To test library's functionality, switch to branch `tests`, go to `tests` folder and read `README.md`.
 
 ## Requirements
-- Python 3 (version 2 is not supported, it's discontinued)
+- Python 3 (version 2 is not supported, because it's discontinued)
