@@ -103,6 +103,24 @@ class MessageResult(RequestResult):
         self.message = message
 
 
+class MessageArchiveResult(RequestResult):
+
+    def __init__(self):
+        super().__init__(False, None, None)
+
+
+class MessageUnArchiveResult(RequestResult):
+
+    def __init__(self):
+        super().__init__(False, None, None)
+
+
+class MessageDeleteResult(RequestResult):
+
+    def __init__(self):
+        super().__init__(False, None, None)
+
+
 class ExamSeenResult(RequestResult):
 
     def __init__(self):

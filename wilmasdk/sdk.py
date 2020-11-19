@@ -60,6 +60,18 @@ class WilmaSDK:
         self.checkRequiredParams(True)
         return self.apiClient.getMessage(message_id)
 
+    def deleteMessage(self, message_id: int):
+        self.checkRequiredParams(True)
+        return self.apiClient.deleteMessage(message_id)
+
+    def archiveMessage(self, message_id: int):
+        self.checkRequiredParams(True)
+        return self.apiClient.archiveMessage(message_id)
+
+    def unArchiveMessage(self, message_id: int):
+        self.checkRequiredParams(True)
+        return self.apiClient.unArchiveMessage(message_id)
+
     def getGroup(self, group_id: int):
         self.checkRequiredParams(True)
         return self.apiClient.getGroup(group_id)

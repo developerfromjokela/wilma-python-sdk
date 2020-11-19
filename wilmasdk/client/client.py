@@ -415,6 +415,72 @@ class WilmaAPIClient:
         except Exception as e:
             return ErrorResult(e)
 
+    def archiveMessage(self, message_id: int):
+        try:
+            formKeyResult = self.getFormKey()
+            if formKeyResult.is_error():
+                return formKeyResult
+            result = self.httpclient.authenticated_post_request('messages/archivetool',
+                                                                {'formkey': formKeyResult.form_key,
+                                                                 'mid': str(message_id), 'format': 'json'})
+            if not result.is_error():
+                if result.get_response().status_code == 302:
+                    return MessageArchiveResult()
+                else:
+                    error_check = checkForWilmaError(result.get_response())
+                    if error_check is not None:
+                        return error_check
+                    else:
+                        return ErrorResult("Archive result parsing failed")
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
+    def unArchiveMessage(self, message_id: int):
+        try:
+            formKeyResult = self.getFormKey()
+            if formKeyResult.is_error():
+                return formKeyResult
+            result = self.httpclient.authenticated_post_request('messages/restorearchived',
+                                                                {'formkey': formKeyResult.form_key,
+                                                                 'mid': str(message_id), 'format': 'json'})
+            if not result.is_error():
+                if result.get_response().status_code == 302:
+                    return MessageUnArchiveResult()
+                else:
+                    error_check = checkForWilmaError(result.get_response())
+                    if error_check is not None:
+                        return error_check
+                    else:
+                        return ErrorResult("Archive result parsing failed")
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
+    def deleteMessage(self, message_id: int):
+        try:
+            formKeyResult = self.getFormKey()
+            if formKeyResult.is_error():
+                return formKeyResult
+            result = self.httpclient.authenticated_post_request('messages/delete',
+                                                                {'formkey': formKeyResult.form_key,
+                                                                 'mid': str(message_id), 'format': 'json'})
+            if not result.is_error():
+                if result.get_response().status_code == 302:
+                    return MessageDeleteResult()
+                else:
+                    error_check = checkForWilmaError(result.get_response())
+                    if error_check is not None:
+                        return error_check
+                    else:
+                        return ErrorResult("Archive result parsing failed")
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
     def getWilmaServers(self):
         try:
             result = self.httpclient.get_request_external(CONFIG['wilmaservers_url'])
