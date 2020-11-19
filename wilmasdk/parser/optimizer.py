@@ -84,7 +84,7 @@ def optimizeHomepage(homepage):
 def optimizeMessage(message):
     newMessage = {
         'id': -1, 'subject': None, 'timestamp': None, 'folder': None,
-        'sender': {'id': -1, 'type': None, 'name': None},
+        'sender': {'id': -1, 'type': None, 'name': None, 'studentName': None, 'senderGuardianId': -1, 'senderGuardianName': None},
         'recipients': [],
         'content': None,
         'replies': [],
@@ -106,6 +106,12 @@ def optimizeMessage(message):
         newMessage['sender']['type'] = convertType(message['SenderType'])
     if existenceCheck(message, "Sender"):
         newMessage['sender']['name'] = message['Sender']
+    if existenceCheck(message, "SenderStudentName"):
+        newMessage['sender']['studentName'] = message['SenderStudentName']
+    if existenceCheck(message, "SenderPasswdID"):
+        newMessage['sender']['senderGuardianId'] = message['SenderPasswdID']
+    if existenceCheck(message, "SenderGuardianName"):
+        newMessage['sender']['senderGuardianName'] = message['SenderGuardianName']
     if existenceCheck(message, "AllowCollatedReply"):
         newMessage['replyAllowed'] = message['AllowCollatedReply']
     if existenceCheck(message, "ContentHtml"):
