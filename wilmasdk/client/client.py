@@ -468,7 +468,7 @@ class WilmaAPIClient:
                                                                 {'formkey': formKeyResult.form_key,
                                                                  'mid': str(message_id), 'format': 'json'}, False)
             if not result.is_error():
-                if result.get_response().status_code == 302:
+                if result.get_response().status_code == 303:
                     return MessageDeleteResult()
                 else:
                     error_check = checkForWilmaError(result.get_response())
