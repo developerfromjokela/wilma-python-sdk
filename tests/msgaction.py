@@ -62,6 +62,20 @@ else:
         result = sdk.archiveMessage(numInt)
     elif command == "unarchive":
         result = sdk.unArchiveMessage(numInt)
+    elif command == "reply":
+        message = sdk.getMessage(numInt)
+        if message.is_error():
+            if message.get_wilma_error() is not None:
+                print(message.get_wilma_error()['message'])
+                print("--> " + message.get_wilma_error()['description'])
+            else:
+                print(message.get_exception())
+        else:
+            if not message.message['replyAllowed']:
+                print("You cannot reply to this message")
+                exit(-1)
+            msg = input("Enter your message: \n")
+            result = sdk.replyToMessage(numInt, msg)
     else:
         print("Invalid command!")
         exit(-1)
