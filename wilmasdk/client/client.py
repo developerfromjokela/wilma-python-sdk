@@ -323,6 +323,27 @@ class WilmaAPIClient:
         except Exception as e:
             return ErrorResult(e)
 
+    def replyToMessage(self, message_id: int, content: str):
+        try:
+            formKeyResult = self.getFormKey()
+            if formKeyResult.is_error():
+                return formKeyResult
+            result = self.httpclient.authenticated_post_request('messages/collatedreply/' + str(message_id), {'formkey': formKeyResult.form_key, 'format': 'json', 'bodytext': content})
+            if not result.is_error():
+                error_check = checkForWilmaError(result.get_response())
+                if error_check is not None:
+                    return error_check
+                response = result.get_response().json()
+                if "messages" in response and len(response['messages']) > 0:
+                    message = wilmasdk.parser.optimizer.optimizeMessage(response['messages'][0])
+                    return MessageResult(message)
+                else:
+                    return ErrorResult("Message not found")
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
     def getGroups(self):
         try:
             result = self.httpclient.authenticated_get_request('groups/index_json')

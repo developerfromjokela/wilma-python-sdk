@@ -64,6 +64,10 @@ class WilmaSDK:
         self.checkRequiredParams(True)
         return self.apiClient.deleteMessage(message_id)
 
+    def replyToMessage(self, message_id: int, content: str):
+        self.checkRequiredParams(True)
+        return self.apiClient.replyToMessage(message_id, content)
+
     def archiveMessage(self, message_id: int):
         self.checkRequiredParams(True)
         return self.apiClient.archiveMessage(message_id)
