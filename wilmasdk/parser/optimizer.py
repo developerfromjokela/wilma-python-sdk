@@ -85,6 +85,7 @@ def optimizeMessage(message):
     newMessage = {
         'id': -1, 'subject': None, 'timestamp': None, 'folder': None,
         'sender': {'id': -1, 'type': None, 'name': None, 'studentName': None, 'senderGuardianId': -1, 'senderGuardianName': None},
+        'eventData': None,
         'recipients': [],
         'content': None,
         'replies': [],
@@ -117,6 +118,9 @@ def optimizeMessage(message):
         newMessage['replyAllowed'] = message['AllowCollatedReply']
     if existenceCheck(message, "IsEvent"):
         newMessage['isEvent'] = message['IsEvent']
+    # Events support is not fully supported yet
+    if existenceCheck(message, "EventData"):
+        newMessage['eventData'] = optimize_dict(message['EventData'])
     if existenceCheck(message, "ContentHtml"):
         newMessage['content'] = message['ContentHtml']
     if existenceCheck(message, "ReplyList"):
