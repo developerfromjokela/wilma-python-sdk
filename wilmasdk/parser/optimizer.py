@@ -88,7 +88,8 @@ def optimizeMessage(message):
         'recipients': [],
         'content': None,
         'replies': [],
-        'replyAllowed': False
+        'replyAllowed': False,
+        'isEvent': False
     }
     if existenceCheck(message, "Id"):
         newMessage['id'] = message['Id']
@@ -114,6 +115,8 @@ def optimizeMessage(message):
         newMessage['sender']['senderGuardianName'] = message['SenderGuardianName']
     if existenceCheck(message, "AllowCollatedReply"):
         newMessage['replyAllowed'] = message['AllowCollatedReply']
+    if existenceCheck(message, "IsEvent"):
+        newMessage['isEvent'] = message['IsEvent']
     if existenceCheck(message, "ContentHtml"):
         newMessage['content'] = message['ContentHtml']
     if existenceCheck(message, "ReplyList"):
