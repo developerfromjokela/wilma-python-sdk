@@ -422,7 +422,7 @@ class WilmaAPIClient:
                 return formKeyResult
             result = self.httpclient.authenticated_post_request('messages/archivetool',
                                                                 {'formkey': formKeyResult.form_key,
-                                                                 'mid': str(message_id), 'format': 'json'})
+                                                                 'mid': str(message_id), 'format': 'json'}, False)
             if not result.is_error():
                 if result.get_response().status_code == 302:
                     return MessageArchiveResult()
@@ -444,7 +444,7 @@ class WilmaAPIClient:
                 return formKeyResult
             result = self.httpclient.authenticated_post_request('messages/restorearchived',
                                                                 {'formkey': formKeyResult.form_key,
-                                                                 'mid': str(message_id), 'format': 'json'})
+                                                                 'mid': str(message_id), 'format': 'json'}, False)
             if not result.is_error():
                 if result.get_response().status_code == 302:
                     return MessageUnArchiveResult()
@@ -466,7 +466,7 @@ class WilmaAPIClient:
                 return formKeyResult
             result = self.httpclient.authenticated_post_request('messages/delete',
                                                                 {'formkey': formKeyResult.form_key,
-                                                                 'mid': str(message_id), 'format': 'json'})
+                                                                 'mid': str(message_id), 'format': 'json'}, False)
             if not result.is_error():
                 if result.get_response().status_code == 302:
                     return MessageDeleteResult()
