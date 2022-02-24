@@ -1,24 +1,21 @@
 #  Copyright (c) 2020 Developer From Jokela.
 #  @author developerfromjokela
-import sys
 
 import requests
 
-if ((3, 0) <= sys.version_info <= (3, 9)):
-    from urllib.parse import urlparse
-elif ((2, 0) <= sys.version_info <= (2, 9)):
-    from urlparse import urlparse
+from urllib.parse import urlparse
 
 from .classes import *
 
 
 class WilmaHttpClient:
 
-    def __init__(self, user_auth, wilma_url):
+    def __init__(self, user_auth, wilma_url, mfa_token):
         if wilma_url is not None and wilma_url[len(wilma_url) - 1] is not "/":
             wilma_url = wilma_url + "/"
         self.user_auth = user_auth
         self.baseUrl = wilma_url
+        self.mfa_token = mfa_token
         self.sessionHttp = requests.Session()
 
     """
@@ -59,9 +56,12 @@ class WilmaHttpClient:
 
     def authenticated_get_request(self, url):
         self.clearCookies()
-        sessionCookie = requests.cookies.create_cookie(domain=self.getBaseURLDomainName(), name='Wilma2SID',
-                                                       value=self.user_auth)
-        self.sessionHttp.cookies.set_cookie(sessionCookie)
+        session_cookie = requests.cookies.create_cookie(domain=self.getBaseURLDomainName(), name='Wilma2SID',
+                                                        value=self.user_auth)
+        mfa_cookie = requests.cookies.create_cookie(domain=self.getBaseURLDomainName(), name='Wilma2MFASID',
+                                                        value=self.mfa_token)
+        self.sessionHttp.cookies.set_cookie(session_cookie)
+        self.sessionHttp.cookies.set_cookie(mfa_cookie)
         try:
             r = self.sessionHttp.get(self.baseUrl + url)
             return RequestResult(False, None, r)
@@ -78,9 +78,12 @@ class WilmaHttpClient:
 
     def authenticated_post_request(self, url, data, followRedirects=True):
         self.clearCookies()
-        sessionCookie = requests.cookies.create_cookie(domain=self.getBaseURLDomainName(), name='Wilma2SID',
-                                                       value=self.user_auth)
-        self.sessionHttp.cookies.set_cookie(sessionCookie)
+        session_cookie = requests.cookies.create_cookie(domain=self.getBaseURLDomainName(), name='Wilma2SID',
+                                                        value=self.user_auth)
+        mfa_cookie = requests.cookies.create_cookie(domain=self.getBaseURLDomainName(), name='Wilma2MFASID',
+                                                    value=self.mfa_token)
+        self.sessionHttp.cookies.set_cookie(session_cookie)
+        self.sessionHttp.cookies.set_cookie(mfa_cookie)
 
         try:
             r = self.sessionHttp.post(self.baseUrl + url, data=data,
@@ -91,9 +94,12 @@ class WilmaHttpClient:
 
     def loginId_post_request(self, url, data, session_id, followRedirects=True):
         self.clearCookies()
-        sessionCookie = requests.cookies.create_cookie(domain=self.getBaseURLDomainName(), name='Wilma2LoginID',
-                                                       value=session_id)
-        self.sessionHttp.cookies.set_cookie(sessionCookie)
+        session_cookie = requests.cookies.create_cookie(domain=self.getBaseURLDomainName(), name='Wilma2LoginID',
+                                                        value=session_id)
+        mfa_cookie = requests.cookies.create_cookie(domain=self.getBaseURLDomainName(), name='Wilma2MFASID',
+                                                    value=self.mfa_token)
+        self.sessionHttp.cookies.set_cookie(session_cookie)
+        self.sessionHttp.cookies.set_cookie(mfa_cookie)
         try:
             r = self.sessionHttp.post(self.baseUrl + url, data=data,
                                       allow_redirects=followRedirects)

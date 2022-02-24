@@ -1,4 +1,4 @@
-#  Copyright (c) 2020 Developer From Jokela.
+#  Copyright (c) 2020-2022 Developer From Jokela.
 #  @author developerfromjokela
 
 import setuptools
@@ -8,7 +8,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='wilma-python-sdk',
-    version='0.2.1',
+    version='0.2.2',
     author="Developer From Jokela",
     author_email="info@developerfromjokela.com",
     description="Python SDK for Wilma API",

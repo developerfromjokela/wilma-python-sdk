@@ -13,7 +13,9 @@ import wilmasdk.parser.lessonotes
 import wilmasdk.parser.exams
 import wilmasdk.parser.groups
 import wilmasdk.parser.news
+import wilmasdk.parser.schedule
 from wilmasdk.parser.lessonotes import optimizeAbsenceInfo
+from datetime import datetime
 
 reLoginErrors = ['common-20', 'common-18', 'common-15', 'common-34']
 
@@ -37,10 +39,11 @@ def checkForWilmaError(response):
 
 class WilmaAPIClient:
 
-    def __init__(self, wilmaserver, wilmasession) -> None:
+    def __init__(self, wilmaserver, wilmasession, mfa_token=None) -> None:
         super().__init__()
         self.wilmaserver = wilmaserver
         self.wilmasesson = wilmasession
+        self.mfa_token = mfa_token
         self.httpclient = httpclient.WilmaHttpClient(wilmasession, wilmaserver)
 
     """
@@ -55,9 +58,10 @@ class WilmaAPIClient:
     Sets Session ID cookie
     """
 
-    def setSession(self, session_id):
+    def setSession(self, session_id, mfa_token=None):
         self.httpclient.user_auth = session_id
         self.wilmasesson = session_id
+        self.mfa_token = mfa_token
 
     """
     Saves role selection if required
@@ -100,6 +104,8 @@ class WilmaAPIClient:
                 response = result.get_response().json()
                 if "LoginResult" in response:
                     if response['LoginResult'] != "Ok":
+                        if response['LoginResult'] == "mfa-required":
+                            return MfaRequired(response.get("FormKey", None))
                         return ErrorResult("Not logged in!")
                     else:
                         return HomepageResult(optimizeHomepage(response), (len(response.get('Roles', [])) > 0))
@@ -241,6 +247,37 @@ class WilmaAPIClient:
             return ErrorResult(e)
 
     """
+    Get schedule
+    """
+
+    def get_schedule(self, date: datetime = None):
+        try:
+            result = self.httpclient.authenticated_get_request(
+                f"schedule/index_json?date={date.strftime('%Y-%M-%d') if date is not None else ''}")
+            if not result.is_error():
+                error_check = checkForWilmaError(result.get_response())
+                if error_check is not None:
+                    return error_check
+                response = result.get_response().json()
+                schedule_result = ScheduleResult([], [])
+                if "Terms" in response:
+                    result.terms = wilmasdk.parser.schedule.parse_terms(response["Terms"])
+                if "Schedule" in response:
+                    result.schedule = wilmasdk.parser.schedule.parse_schedule(date, response['Schedule'])
+                return schedule_result
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
+    """
+    Get schedule within a date range
+    """
+    def get_schedule_range(self, start_date: datetime, end_date: datetime):
+        # TODO to be implemented
+        return ErrorResult("To be implemented!")
+
+    """
     Marks exam(s) as seen, multiple exams could be included in one request
     """
 
@@ -328,7 +365,9 @@ class WilmaAPIClient:
             formKeyResult = self.getFormKey()
             if formKeyResult.is_error():
                 return formKeyResult
-            result = self.httpclient.authenticated_post_request('messages/collatedreply/' + str(message_id), {'formkey': formKeyResult.form_key, 'format': 'json', 'bodytext': content})
+            result = self.httpclient.authenticated_post_request('messages/collatedreply/' + str(message_id),
+                                                                {'formkey': formKeyResult.form_key, 'format': 'json',
+                                                                 'bodytext': content})
             if not result.is_error():
                 error_check = checkForWilmaError(result.get_response())
                 if error_check is not None:
@@ -531,9 +570,13 @@ class WilmaAPIClient:
             if not result.is_error():
                 response = result.get_response().json()
                 cookies = result.get_response().cookies.get_dict()
-                if "LoginResult" in response and response['LoginResult'] == "Ok":
+                if "LoginResult" in response and (response['LoginResult'] == "Ok"
+                                                  or response["LoginResult"] == "mfa-required"):
                     if 'Wilma2SID' not in cookies:
                         return ErrorResult("Session not found")
+
+                    if response['LoginResult'] == "mfa-required":
+                        return MfaRequired(response.get("FormKey", None), cookies['Wilma2SID'])
                     return LoginResult(cookies['Wilma2SID'], (len(response.get('Roles', [])) > 0),
                                        optimizeHomepage(response))
                 else:

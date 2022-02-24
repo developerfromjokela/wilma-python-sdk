@@ -1,11 +1,12 @@
-#  Copyright (c) 2020 Developer From Jokela.
+#  Copyright (c) 2020-2022 Developer From Jokela.
 #  @author developerfromjokela
+import datetime
 
 from wilmasdk.client.client import WilmaAPIClient
 from wilmasdk.net.classes import ErrorResult
-from wilmasdk.parser.validator.roles import validateRole
-from wilmasdk.parser.validator.excuses import validateExcuse
 from wilmasdk.parser.validator.exams import validateExam
+from wilmasdk.parser.validator.excuses import validateExcuse
+from wilmasdk.parser.validator.roles import validateRole
 
 
 class WilmaSDK:
@@ -16,7 +17,7 @@ class WilmaSDK:
         self.role = None
         self.roleRequired = False
 
-    def checkRequiredParams(self, session_required=True):
+    def check_required_params(self, session_required=True):
         if session_required and self.apiClient.wilmasesson is None:
             return ErrorResult('Not logged in!')
         elif self.role is None and self.roleRequired:
@@ -24,100 +25,104 @@ class WilmaSDK:
         if self.apiClient.wilmaserver is None:
             return ErrorResult('Set wilma server URL first!')
 
-    def getWilmaServers(self):
-        self.checkRequiredParams(False)
+    def get_wilma_servers(self):
+        self.check_required_params(False)
         return self.apiClient.getWilmaServers()
 
-    def setWilmaServer(self, url):
+    def set_wilma_server(self, url):
         self.apiClient.changeWilmaAddress(url)
 
-    def setRole(self, role):
+    def set_role(self, role):
         if not validateRole(role):
             raise Exception("Role is not valid!")
         self.apiClient.setRole(role)
 
-    def getHomepage(self):
-        self.checkRequiredParams(True)
+    def get_homepage(self):
+        self.check_required_params(True)
         return self.apiClient.getHomepage()
 
-    def getLessonNotes(self):
-        self.checkRequiredParams(True)
+    def get_lesson_notes(self):
+        self.check_required_params(True)
         return self.apiClient.getLessonNotes()
 
-    def getExams(self):
-        self.checkRequiredParams(True)
+    def get_exams(self):
+        self.check_required_params(True)
         return self.apiClient.getExams()
 
-    def getGroups(self):
-        self.checkRequiredParams(True)
+    def get_courses(self):
+        self.check_required_params(True)
         return self.apiClient.getGroups()
 
-    def getMessages(self):
-        self.checkRequiredParams(True)
+    def get_messages(self):
+        self.check_required_params(True)
         return self.apiClient.getMessages()
 
-    def getMessage(self, message_id: int):
-        self.checkRequiredParams(True)
+    def get_message(self, message_id: int):
+        self.check_required_params(True)
         return self.apiClient.getMessage(message_id)
 
-    def deleteMessage(self, message_id: int):
-        self.checkRequiredParams(True)
+    def delete_message(self, message_id: int):
+        self.check_required_params(True)
         return self.apiClient.deleteMessage(message_id)
 
-    def replyToMessage(self, message_id: int, content: str):
-        self.checkRequiredParams(True)
+    def reply_to_message(self, message_id: int, content: str):
+        self.check_required_params(True)
         return self.apiClient.replyToMessage(message_id, content)
 
-    def archiveMessage(self, message_id: int):
-        self.checkRequiredParams(True)
+    def archive_message(self, message_id: int):
+        self.check_required_params(True)
         return self.apiClient.archiveMessage(message_id)
 
-    def unArchiveMessage(self, message_id: int):
-        self.checkRequiredParams(True)
+    def unarchive_message(self, message_id: int):
+        self.check_required_params(True)
         return self.apiClient.unArchiveMessage(message_id)
 
-    def getGroup(self, group_id: int):
-        self.checkRequiredParams(True)
+    def get_course(self, group_id: int):
+        self.check_required_params(True)
         return self.apiClient.getGroup(group_id)
 
-    def getAnnouncements(self):
-        self.checkRequiredParams(True)
+    def get_announcements(self):
+        self.check_required_params(True)
         return self.apiClient.getAnnouncements()
 
-    def getAnnouncement(self, announcement_id: int):
-        self.checkRequiredParams(True)
+    def get_schedule(self, date: datetime.datetime = None):
+        self.check_required_params(True)
+        return self.apiClient.get_schedule(date)
+
+    def get_announcement(self, announcement_id: int):
+        self.check_required_params(True)
         return self.apiClient.getAnnouncement(announcement_id)
 
-    def getExcuseReasons(self):
-        self.checkRequiredParams(True)
+    def get_excuse_reasons(self):
+        self.check_required_params(True)
         return self.apiClient.getExcuseReasons()
 
-    def getAbsenceReasons(self):
-        self.checkRequiredParams(True)
+    def get_absence_reasons(self):
+        self.check_required_params(True)
         return self.apiClient.getAbsenceReasons()
 
-    def markClearance(self, excuse, lesson_note_id, reason=None):
-        self.checkRequiredParams(True)
+    def mark_clearance(self, excuse, lesson_note_id, reason=None):
+        self.check_required_params(True)
         if not validateExcuse(excuse):
             return ErrorResult("Excuse is not valid!")
         return self.apiClient.markClearance(excuse, lesson_note_id, reason)
 
-    def markExamSeen(self, exams):
-        self.checkRequiredParams(True)
+    def mark_exam_seen(self, exams):
+        self.check_required_params(True)
         for exam in exams:
             if not validateExam(exam):
                 return ErrorResult("One of exams is not valid!")
         return self.apiClient.markExamAsSeen(exams)
 
-    def markAbsence(self, absence: dict, report_date: int, reason: str = None):
-        self.checkRequiredParams(True)
+    def mark_absence(self, absence: dict, report_date: int, reason: str = None):
+        self.check_required_params(True)
         # Validating excuse, because its type is identical to absence's one
         if not validateExcuse(absence):
             return ErrorResult("Absence is not valid!")
         return self.apiClient.markAbsence(absence, report_date, reason)
 
     def login(self, username, password, apikey):
-        self.checkRequiredParams(False)
+        self.check_required_params(False)
         sessionRequest = self.apiClient.getSession()
         if sessionRequest.is_error():
             return sessionRequest
@@ -130,9 +135,9 @@ class WilmaSDK:
             return loginResult
 
     def logout(self):
-        self.checkRequiredParams(True)
+        self.check_required_params(True)
         return self.apiClient.logout()
 
-    def loginUsingSessionId(self, session_id):
-        self.apiClient.setSession(session_id)
+    def login_using_session_id(self, session_id, mfa_token=None):
+        self.apiClient.setSession(session_id, mfa_token)
         return self.apiClient.getHomepage()

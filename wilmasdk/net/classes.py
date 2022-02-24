@@ -53,6 +53,14 @@ class LoginResult(RequestResult):
         self.homepage = homepage
 
 
+class MfaRequired(RequestResult):
+
+    def __init__(self, form_key, session=None):
+        super().__init__(True, None, None)
+        self.session = session
+        self.form_key = form_key
+
+
 class LogoutResult(RequestResult):
 
     def __init__(self):
@@ -143,9 +151,10 @@ class AnnouncementsResult(RequestResult):
 
 class ScheduleResult(RequestResult):
 
-    def __init__(self, schedule):
+    def __init__(self, schedule, terms):
         super().__init__(False, None, None)
         self.schedule = schedule
+        self.terms = terms
 
 
 class GroupResult(RequestResult):
@@ -200,7 +209,7 @@ class AuthSessionResult(RequestResult):
 
 class SessionValidateResult(RequestResult):
 
-    def __init__(self, validation, user_id, user_type):
+    def __init__(self, validation, user_id, user_type, mfa_required):
         super().__init__(False, None, None)
         self.validation = validation
         self.user_id = user_id
