@@ -44,7 +44,7 @@ class WilmaAPIClient:
         self.wilmaserver = wilmaserver
         self.wilmasesson = wilmasession
         self.mfa_token = mfa_token
-        self.httpclient = httpclient.WilmaHttpClient(wilmasession, wilmaserver)
+        self.httpclient = httpclient.WilmaHttpClient(self.wilmasesson, self.wilmaserver, self.mfa_token)
 
     """
     If server URL needs an change, this is for that

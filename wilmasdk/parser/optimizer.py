@@ -84,7 +84,8 @@ def optimizeHomepage(homepage):
 def optimizeMessage(message):
     newMessage = {
         'id': -1, 'subject': None, 'timestamp': None, 'folder': None,
-        'sender': {'id': -1, 'type': None, 'name': None, 'studentName': None, 'senderGuardianId': -1, 'senderGuardianName': None},
+        'sender': {'id': -1, 'type': None, 'name': None, 'studentName': None, 'senderGuardianId': -1,
+                   'senderGuardianName': None},
         'eventData': None,
         'recipients': [],
         'content': None,
@@ -151,6 +152,14 @@ def optimizeReply(reply):
         newReply['sender']['type'] = convertType(reply['SenderType'])
     if existenceCheck(reply, "Sender"):
         newReply['sender']['name'] = reply['Sender']
+
+
+# Because of complexity, this will be postponed
+def optimizeRecipients(recipients):
+    newRecipients = {
+        'guardians': [],
+        'schools': []
+    }
 
 
 def base64ImageToPillow(image):
