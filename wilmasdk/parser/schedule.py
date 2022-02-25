@@ -22,6 +22,13 @@ def parse_wilma_date(date_string):
     return date_time_obj
 
 
+def split_week_ranges(start, end):
+    diff = (end - start) / 7
+    for i in range(7):
+        yield start + diff * i
+    yield end.strftime("%Y%m%d")
+
+
 def restructure_resource(resource, resource_type):
     return resource_type(resource.get("Id", None), resource.get("Caption", None), resource.get("LongCaption", None))
 

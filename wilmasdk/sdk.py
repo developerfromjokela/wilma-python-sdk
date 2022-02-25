@@ -89,6 +89,10 @@ class WilmaSDK:
         self.check_required_params(True)
         return self.apiClient.get_schedule(date)
 
+    def get_schedule_range(self, start: datetime.datetime, end: datetime.datetime):
+        self.check_required_params(True)
+        return self.apiClient.get_schedule_range(start, end)
+
     def get_announcement(self, announcement_id: int):
         self.check_required_params(True)
         return self.apiClient.getAnnouncement(announcement_id)

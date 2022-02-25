@@ -273,9 +273,19 @@ class WilmaAPIClient:
     """
     Get schedule within a date range
     """
+
     def get_schedule_range(self, start_date: datetime, end_date: datetime):
-        # TODO to be implemented
-        return ErrorResult("To be implemented!")
+        reservations = []
+        terms = []
+        for date in list(wilmasdk.parser.schedule.split_week_ranges(start_date, end_date)):
+            schedule = self.get_schedule(date)
+            if schedule.is_error():
+                return schedule
+            for reservation in schedule.schedule:
+                reservations.append(reservation)
+            if len(schedule.terms) > 0 and len(terms) < 1:
+                terms = schedule.terms
+        return ScheduleResult(reservations, terms)
 
     """
     Marks exam(s) as seen, multiple exams could be included in one request
