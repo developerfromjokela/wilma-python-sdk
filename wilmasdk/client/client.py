@@ -253,7 +253,7 @@ class WilmaAPIClient:
     def get_schedule(self, date: datetime = None):
         try:
             result = self.httpclient.authenticated_get_request(
-                f"schedule/index_json?date={date.strftime('%Y-%M-%d') if date is not None else ''}")
+                f"schedule/index_json?date={date.strftime('%Y-%M-%d') if date is not None else ''}&mobile")
             if not result.is_error():
                 error_check = checkForWilmaError(result.get_response())
                 if error_check is not None:
