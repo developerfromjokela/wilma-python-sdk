@@ -18,7 +18,7 @@ Visma! Write that down! Write that down!
 
 def optimizeGroup(group):
     newGroup = {'id': -1, 'courseId': -1, 'name': None, 'codeName': None, 'shortName': None, 'startDate': None,
-                'endDate': None, 'teachers': [], 'students': [], 'homework': [], 'exams': []}
+                'endDate': None, 'teachers': [], 'students': [], 'homework': [], 'exams': [], "raw": group}
     if existenceCheck(group, 'Id'):
         newGroup['id'] = group['Id']
     if existenceCheck(group, 'Id'):
@@ -70,7 +70,7 @@ def optimizeGroupExam(group, exam):
 
 
 def optimizeGroupStudent(student):
-    newStudent = {'id': -1, 'name': None, 'schoolId': -1, 'class': {'id': -1, 'name': None}}
+    newStudent = {'id': -1, 'name': None, 'schoolId': -1, 'class': {'id': -1, 'name': None}, "raw": student}
     if existenceCheck(student, 'Id'):
         newStudent['id'] = student['Id']
     if existenceCheck(student, 'Name'):
@@ -85,7 +85,7 @@ def optimizeGroupStudent(student):
 
 
 def optimizeHomework(homework):
-    newHomework = {'timestamp': None, 'content': None}
+    newHomework = {'timestamp': None, 'content': None, "raw": homework}
     if existenceCheck(homework, 'Date'):
         newHomework['timestamp'] = datetime.datetime.strptime(homework['Date'], '%Y-%m-%d')
     if existenceCheck(homework, 'Homework'):

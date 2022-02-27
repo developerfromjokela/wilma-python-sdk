@@ -42,7 +42,7 @@ def parseMessageTimestamp(string_time):
 
 
 def optimize_dict(d):
-    new = {}
+    new = {"raw": d}
     for k, v in d.items():
         if isinstance(v, dict):
             v = optimize_dict(v)
@@ -91,7 +91,8 @@ def optimizeMessage(message):
         'content': None,
         'replies': [],
         'replyAllowed': False,
-        'isEvent': False
+        'isEvent': False,
+        "raw": message
     }
     if existenceCheck(message, "Id"):
         newMessage['id'] = message['Id']
@@ -139,7 +140,7 @@ def optimizeMessages(messages):
 
 def optimizeReply(reply):
     newReply = {'id': None, 'content': None, 'timestamp': None,
-                'sender': {'id': -1, 'type': None, 'name': None}}
+                'sender': {'id': -1, 'type': None, 'name': None}, "raw": reply}
     if existenceCheck(reply, "Id"):
         newReply['id'] = reply['Id']
     if existenceCheck(reply, "ContentHtml"):

@@ -20,7 +20,8 @@ def optimizeLessonNote(lesson_note):
                      'disc': {'id': -1, 'name': None},
                      'colors': {'foreground': None, 'background': None},
                      'info': None,
-                     'requiresClearance': False
+                     'requiresClearance': False,
+                     "raw": lesson_note
                      }
     if existenceCheck(lesson_note, 'Id'):
         newLessonNote['id'] = lesson_note['Id']

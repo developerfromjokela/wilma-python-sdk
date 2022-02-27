@@ -19,7 +19,7 @@ def optimizeExam(exam):
     newExam = {'id': -1, 'examId': -1, 'name': None, 'date': None, 'info': None, 'unseen': False,
                'seenOn': None,
                'course': {'id': -1, 'shortName': None, 'name': None, 'teachers': []},
-               'grade': {'grade': None, 'verbal': None}}
+               'grade': {'grade': None, 'verbal': None}, 'raw': exam}
     if existenceCheck(exam, 'Id'):
         newExam['id'] = exam['Id']
     if existenceCheck(exam, 'ExamId'):

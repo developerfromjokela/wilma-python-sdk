@@ -36,6 +36,7 @@ def restructure_resource(resource, resource_type):
 def restructure_course(group):
     course = Course(
         group.get("Id", None),
+        group,
         group.get("CourseId", None),
         group.get("ShortCode", None),
         group.get("Caption", None),
@@ -70,7 +71,7 @@ def parse_wilma_time(time_string):
 
 
 def restructure(date: datetime, reservation):
-    new_reservation = Reservation(reservation.get("ReservationID", -1), reservation.get("ScheduleID", -1), date,
+    new_reservation = Reservation(reservation.get("ReservationID", -1), reservation, reservation.get("ScheduleID", -1), date,
                                   parse_wilma_time(reservation.get("Start", None)),
                                   parse_wilma_time(reservation.get("End", None)),
                                   reservation.get("Class", None), [])
@@ -107,7 +108,7 @@ def parse_schedule(date: datetime, schedule):
     days = []
     for key in reservation_map.keys():
         timestamp = datetime.utcfromtimestamp(key)
-        days.append(Day(date=timestamp, reservations=reservation_map[key]))
+        days.append(Day(date=timestamp, reservations=reservation_map[key], raw=schedule))
 
     # Sorting
     def date_sort(value: Day):
@@ -122,6 +123,7 @@ def parse_terms(terms):
     for term in terms:
         parsed_terms.append(
             Term(
+                term,
                 term.get("Name", None),
                 parse_wilma_date(term.get("StartDate", None)),
                 parse_wilma_date(term.get("EndDate", None))

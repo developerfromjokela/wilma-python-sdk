@@ -17,7 +17,7 @@ def parseDate(string, date_format):
 
 def optimizeNew(new):
     newNew = {'id': -1, 'limit': {'start': None, 'end': None}, 'topic': None, 'description': None, 'creator': None,
-              'created': None, 'content': {'text': None, 'html': None}}
+              'created': None, 'content': {'text': None, 'html': None}, "raw": new}
     if existenceCheck(new, 'Id'):
         newNew['id'] = new['Id']
     if existenceCheck(new, 'StartDate'):
