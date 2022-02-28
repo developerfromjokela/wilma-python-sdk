@@ -30,7 +30,7 @@ def split_week_ranges(start, end):
 
 
 def restructure_resource(resource, resource_type):
-    return resource_type(resource.get("Id", None), resource.get("Caption", None), resource.get("LongCaption", None))
+    return resource_type(resource.get("Id", None), resource, resource.get("Caption", None), resource.get("LongCaption", None))
 
 
 def restructure_course(group):
