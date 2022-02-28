@@ -263,7 +263,7 @@ class WilmaAPIClient:
                 if "Terms" in response:
                     result.terms = wilmasdk.parser.schedule.parse_terms(response["Terms"])
                 if "Schedule" in response:
-                    result.schedule = wilmasdk.parser.schedule.parse_schedule(date, response['Schedule'])
+                    result.schedule = wilmasdk.parser.schedule.parse_schedule(date if date is not None else datetime.now(), response['Schedule'])
                 return schedule_result
             else:
                 return result
