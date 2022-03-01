@@ -286,7 +286,8 @@ class WilmaAPIClient:
                 if "Terms" in response:
                     schedule_result.terms = wilmasdk.parser.schedule.parse_terms(response["Terms"])
                 if "Schedule" in response:
-                    schedule_result.schedule = wilmasdk.parser.schedule.parse_schedule(date if date is not None else datetime.now(), response['Schedule'])
+                    schedule_result.schedule = wilmasdk.parser.schedule.parse_schedule(
+                        date if date is not None else datetime.now(), response['Schedule'])
                 return schedule_result
             else:
                 return result
@@ -370,6 +371,143 @@ class WilmaAPIClient:
                 if "Messages" in response:
                     messages = wilmasdk.parser.optimizer.optimizeMessages(response['Messages'])
                 return MessagesResult(messages)
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
+    def getRecipients(self):
+        try:
+            result = self.httpclient.authenticated_get_request('messages/recipients?format=json')
+            if not result.is_error():
+                error_check = checkForWilmaError(result.get_response())
+                if error_check is not None:
+                    return error_check
+                response = result.get_response().json()
+                if "IndexRecords" not in response:
+                    return NoRecipientsAvailable()
+                return RecipientsResult(response)
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
+    def getTeacherRecipients(self, school_id):
+        try:
+            result = self.httpclient.authenticated_get_request(f'messages/recipients/teachers/{school_id}?format=json')
+            if not result.is_error():
+                error_check = checkForWilmaError(result.get_response())
+                if error_check is not None:
+                    return error_check
+                response = result.get_response().json()
+                if "TeacherRecords" not in response:
+                    return NoRecipientsAvailable()
+                return RecipientsResult(response["TeacherRecords"])
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
+    def getOwnTeachers(self, teachers_id):
+        try:
+            result = self.httpclient.authenticated_get_request(f'messages/recipients/ownteachers/{teachers_id}?format=json')
+            if not result.is_error():
+                error_check = checkForWilmaError(result.get_response())
+                if error_check is not None:
+                    return error_check
+                response = result.get_response().json()
+                if "TeacherRecords" not in response:
+                    return NoRecipientsAvailable()
+                return RecipientsResult(response["TeacherRecords"])
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
+    def getClassRecipients(self, school_id):
+        try:
+            result = self.httpclient.authenticated_get_request(f'messages/recipients/class/{school_id}?format=json')
+            if not result.is_error():
+                error_check = checkForWilmaError(result.get_response())
+                if error_check is not None:
+                    return error_check
+                response = result.get_response().json()
+                if "StudentRecords" not in response:
+                    return NoRecipientsAvailable()
+                return RecipientsResult(response["StudentRecords"])
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
+    def getPersonnelRecipients(self, school_id):
+        try:
+            result = self.httpclient.authenticated_get_request(f'messages/recipients/personnel/{school_id}?format=json')
+            if not result.is_error():
+                error_check = checkForWilmaError(result.get_response())
+                if error_check is not None:
+                    return error_check
+                response = result.get_response().json()
+                if "PersonnelRecords" not in response:
+                    return NoRecipientsAvailable()
+                return RecipientsResult(response["PersonnelRecords"])
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
+    def searchRecipients(self, query):
+        try:
+            result = self.httpclient.authenticated_get_request(f'messages/recipients/search?name={query}&format=json')
+            if not result.is_error():
+                error_check = checkForWilmaError(result.get_response())
+                if error_check is not None:
+                    return error_check
+                response = result.get_response().json()
+                return RecipientsResult(response)
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
+    def get_group_recipients(self, region=None, include_students=True):
+        def get_region(name):
+            wilma_region = self.fetch_group_recipients(name)
+            if wilma_region.is_error():
+                return wilma_region
+            wilma_region = [] if "PeriodGroups" not in wilma_region else wilma_region["PeriodGroups"]
+
+            if include_students:
+                for index, value in enumerate(wilma_region):
+                    if "ID" in value:
+                        students = self.fetch_group_recipients(value["ID"])
+                        if students.is_error():
+                            return students
+                        students = [] if "StudentRecords" not in students else students["StudentRecords"]
+                        wilma_region[index]['students'] = students
+            return wilma_region
+
+        if region is None:
+            past = get_region("past")
+            current = get_region("current")
+            future = get_region("future")
+            return RecipientsResult({"past": past, "current": current, "future": future})
+        else:
+            api_region = get_region(region)
+            return api_region if api_region.is_error() else RecipientsResult(api_region)
+
+    def fetch_group_recipients(self, group_region, key_element=None):
+        try:
+            result = self.httpclient.authenticated_get_request(f'messages/recipients/groups/{group_region}&format=json')
+            if not result.is_error():
+                error_check = checkForWilmaError(result.get_response())
+                if error_check is not None:
+                    return error_check
+                response = result.get_response().json()
+                if key_element is None or key_element in response:
+                    return RecipientsResult(response)
+                else:
+                    return ErrorResult(f"Key element requirements not met: {key_element}")
             else:
                 return result
         except Exception as e:

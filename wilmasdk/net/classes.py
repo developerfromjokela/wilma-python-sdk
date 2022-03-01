@@ -34,6 +34,12 @@ class ErrorResult(RequestResult):
         return self.wilma_error
 
 
+class NoRecipientsAvailable(ErrorResult):
+
+    def __init__(self):
+        super().__init__("No recipients available", None)
+
+
 class WilmaServersResult(RequestResult):
 
     def __init__(self, servers):
@@ -102,6 +108,13 @@ class MessagesResult(RequestResult):
     def __init__(self, messages):
         super().__init__(False, None, None)
         self.messages = messages
+
+
+class RecipientsResult(RequestResult):
+
+    def __init__(self, recipients):
+        super().__init__(False, None, None)
+        self.recipients = recipients
 
 
 class MessageResult(RequestResult):
