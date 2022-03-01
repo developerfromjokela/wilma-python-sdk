@@ -30,6 +30,9 @@ class WilmaHttpClient:
     def getBaseURLDomainName(self):
         return '{uri.netloc}'.format(uri=urlparse(self.baseUrl))
 
+    def getRootURL(self):
+        return '{uri.scheme}://{uri.netloc}/'.format(uri=urlparse(self.baseUrl))
+
     """
     Removing cookies, because they're injected anyway when needed
     Requests stores them across requests, we don't need that
@@ -64,6 +67,21 @@ class WilmaHttpClient:
         self.sessionHttp.cookies.set_cookie(mfa_cookie)
         try:
             r = self.sessionHttp.get(self.baseUrl + url)
+            return RequestResult(False, None, r)
+        except Exception as e:
+            return ErrorResult(e)
+
+    def authenticated_root_get_request(self, url):
+        self.clearCookies()
+        session_cookie = requests.cookies.create_cookie(domain=self.getBaseURLDomainName(), name='Wilma2SID',
+                                                        value=self.user_auth)
+        mfa_cookie = requests.cookies.create_cookie(domain=self.getBaseURLDomainName(), name='Wilma2MFASID',
+                                                        value=self.mfa_token)
+        self.sessionHttp.cookies.set_cookie(session_cookie)
+        self.sessionHttp.cookies.set_cookie(mfa_cookie)
+        root_url = self.getRootURL()
+        try:
+            r = self.sessionHttp.get(root_url + url)
             return RequestResult(False, None, r)
         except Exception as e:
             return ErrorResult(e)

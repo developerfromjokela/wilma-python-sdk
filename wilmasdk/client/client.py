@@ -117,6 +117,29 @@ class WilmaAPIClient:
         except Exception as e:
             return ErrorResult(e)
 
+    def get_root_user(self):
+        try:
+            result = self.httpclient.authenticated_root_get_request('index_json')
+            if not result.is_error():
+                error_check = checkForWilmaError(result.get_response())
+                if error_check is not None:
+                    return error_check
+                response = result.get_response().json()
+                if "LoginResult" in response:
+                    if response['LoginResult'] != "Ok":
+                        if response['LoginResult'] == "mfa-required":
+                            return MfaRequired(response.get("FormKey", None))
+                        return ErrorResult("Not logged in!")
+                    else:
+                        return HomepageResult(optimizeHomepage(response), (len(response.get('Roles', [])) > 0))
+
+                else:
+                    return ErrorResult("Homepage couldn't be parsed")
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
     def getExcuseReasons(self):
         try:
             result = self.httpclient.authenticated_get_request('attendance?format=json')
