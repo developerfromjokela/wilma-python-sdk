@@ -384,8 +384,6 @@ class WilmaAPIClient:
                 if error_check is not None:
                     return error_check
                 response = result.get_response().json()
-                if "IndexRecords" not in response:
-                    return NoRecipientsAvailable()
                 return RecipientsResult(response)
             else:
                 return result
