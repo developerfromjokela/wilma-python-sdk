@@ -159,6 +159,19 @@ class WilmaAPIClient:
         except Exception as e:
             return ErrorResult(e)
 
+    def getProfileImage(self, user_id, user_type="teacher"):
+        try:
+            result = self.httpclient.authenticated_get_request(f'profiles/photo/{user_type}/{user_id}?format=json')
+            if not result.is_error():
+                error_check = checkForWilmaError(result.get_response())
+                if error_check is not None:
+                    return error_check
+                return result.get_response()
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
     def getFormKey(self):
         result = self.getHomepage()
         if result.is_error():
@@ -408,7 +421,8 @@ class WilmaAPIClient:
 
     def getOwnTeachers(self, teachers_id):
         try:
-            result = self.httpclient.authenticated_get_request(f'messages/recipients/ownteachers/{teachers_id}?format=json')
+            result = self.httpclient.authenticated_get_request(
+                f'messages/recipients/ownteachers/{teachers_id}?format=json')
             if not result.is_error():
                 error_check = checkForWilmaError(result.get_response())
                 if error_check is not None:
