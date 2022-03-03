@@ -166,9 +166,7 @@ class WilmaAPIClient:
                 error_check = checkForWilmaError(result.get_response())
                 if error_check is not None:
                     return error_check
-                return result.get_response()
-            else:
-                return result
+            return result
         except Exception as e:
             return ErrorResult(e)
 
