@@ -129,3 +129,4 @@ def parse_terms(terms):
                 parse_wilma_date(term.get("EndDate", None))
             )
         )
+    return parsed_terms
