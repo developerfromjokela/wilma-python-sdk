@@ -581,6 +581,23 @@ class WilmaAPIClient:
         except Exception as e:
             return ErrorResult(e)
 
+    def getGroupInTimeline(self, timeline="past"):
+        try:
+            result = self.httpclient.authenticated_get_request(f'groups/index_json/${timeline}')
+            if not result.is_error():
+                error_check = checkForWilmaError(result.get_response())
+                if error_check is not None:
+                    return error_check
+                response = result.get_response().json()
+                groups = []
+                if "Groups" in response:
+                    groups = wilmasdk.parser.groups.optimizeGroups(response['Groups'])
+                return GroupsResult(groups)
+            else:
+                return result
+        except Exception as e:
+            return ErrorResult(e)
+
     def getAnnouncements(self):
         try:
             result = self.httpclient.authenticated_get_request('news/index_json')
