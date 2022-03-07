@@ -30,7 +30,8 @@ def split_week_ranges(start, end):
 
 
 def restructure_resource(resource, resource_type):
-    return resource_type(resource.get("Id", None), resource, resource.get("Caption", None), resource.get("LongCaption", None))
+    return resource_type(resource.get("Id", None), resource, resource.get("Caption", None),
+                         resource.get("LongCaption", None))
 
 
 def restructure_course(group):
@@ -55,7 +56,7 @@ def restructure_course(group):
     return course
 
 
-def parse_wilma_time(time_string):
+def parse_wilma_time(time_string, date: datetime = None):
     date_format = "%H:%M"
     backup_format = "%H:%M:%S"
     try:
@@ -67,13 +68,17 @@ def parse_wilma_time(time_string):
         else:
             print(e)
             return None
+    if date is not None:
+        return date.replace(hour=date_time_obj.hour, minute=date_time_obj.minute, second=date_time_obj.second,
+                            microsecond=date_time_obj.microsecond)
     return date_time_obj
 
 
 def restructure(date: datetime, reservation):
-    new_reservation = Reservation(reservation.get("ReservationID", -1), reservation, reservation.get("ScheduleID", -1), date,
-                                  parse_wilma_time(reservation.get("Start", None)),
-                                  parse_wilma_time(reservation.get("End", None)),
+    new_reservation = Reservation(reservation.get("ReservationID", -1), reservation, reservation.get("ScheduleID", -1),
+                                  date,
+                                  parse_wilma_time(reservation.get("Start", None), date),
+                                  parse_wilma_time(reservation.get("End", None), date),
                                   reservation.get("Class", None), [])
     for group in reservation.get("Groups", []):
         new_reservation.courses.append(restructure_course(group))
