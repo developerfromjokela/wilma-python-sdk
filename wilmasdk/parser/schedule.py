@@ -69,8 +69,7 @@ def parse_wilma_time(time_string, date: datetime = None):
             print(e)
             return None
     if date is not None:
-        return date.replace(hour=date_time_obj.hour, minute=date_time_obj.minute, second=date_time_obj.second,
-                            microsecond=date_time_obj.microsecond)
+        return date.replace(hour=date_time_obj.hour, minute=date_time_obj.minute, second=date_time_obj.second)
     return date_time_obj
 
 
