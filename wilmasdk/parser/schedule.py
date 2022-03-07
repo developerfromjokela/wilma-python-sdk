@@ -26,7 +26,7 @@ def split_week_ranges(start, end):
     diff = (end - start) / 7
     for i in range(7):
         yield start + diff * i
-    yield end.strftime("%Y%m%d")
+    yield end
 
 
 def restructure_resource(resource, resource_type):
@@ -99,7 +99,7 @@ def parse_schedule(date: datetime, schedule):
             last_day = reservation_date
 
         # Getting date
-        corrected_date = (monday + timedelta(days=current_day)).replace(hour=0, minute=0, second=0)
+        corrected_date = datetime.combine((monday + timedelta(days=current_day)), datetime(1970, 1, 1, 0, 0, 0, 0).time())
         restructured_reservation = restructure(date, schedule_reservation)
         unix_time = float(corrected_date.strftime("%s"))
         if unix_time in reservation_map:
@@ -112,7 +112,7 @@ def parse_schedule(date: datetime, schedule):
     # Creating final object
     days = []
     for key in reservation_map.keys():
-        timestamp = datetime.utcfromtimestamp(key)
+        timestamp = datetime.fromtimestamp(key)
         days.append(Day(date=timestamp, reservations=reservation_map[key], raw=schedule))
 
     # Sorting
