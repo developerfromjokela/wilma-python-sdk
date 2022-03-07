@@ -2,8 +2,8 @@
 #  @author developerfromjokela
 
 from wilmasdk.parser.exams import optimizeTeacher, optimizeExam
-import datetime
 import bs4
+from .schedule import parse_wilma_date
 
 
 def existenceCheck(dist_item, key):
@@ -30,9 +30,9 @@ def optimizeGroup(group):
     if existenceCheck(group, 'Name'):
         newGroup['shortName'] = group['Name']
     if existenceCheck(group, 'StartDate'):
-        newGroup['startDate'] = datetime.datetime.strptime(group['StartDate'], '%Y-%m-%d')
+        newGroup['startDate'] = parse_wilma_date(group['StartDate'])
     if existenceCheck(group, 'EndDate'):
-        newGroup['endDate'] = datetime.datetime.strptime(group['EndDate'], '%Y-%m-%d')
+        newGroup['endDate'] = parse_wilma_date(group['EndDate'])
     if existenceCheck(group, 'Teachers'):
         for teacher in group['Teachers']:
             newGroup['teachers'].append(optimizeTeacher(teacher))
@@ -87,7 +87,7 @@ def optimizeGroupStudent(student):
 def optimizeHomework(homework):
     newHomework = {'timestamp': None, 'content': None, "raw": homework}
     if existenceCheck(homework, 'Date'):
-        newHomework['timestamp'] = datetime.datetime.strptime(homework['Date'], '%Y-%m-%d')
+        newHomework['timestamp'] = parse_wilma_date(homework['Date'])
     if existenceCheck(homework, 'Homework'):
         newHomework['content'] = bs4.BeautifulSoup(homework['Homework'], 'html.parser').text
     return newHomework

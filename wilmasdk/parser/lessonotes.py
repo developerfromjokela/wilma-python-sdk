@@ -1,6 +1,7 @@
 #  Copyright (c) 2020 Developer From Jokela.
 #  @author developerfromjokela
 import datetime
+from .schedule import parse_wilma_date
 
 """
 Converting Visma's format to more coding-friendly format, because their own is confusing and not logical
@@ -26,7 +27,7 @@ def optimizeLessonNote(lesson_note):
     if existenceCheck(lesson_note, 'Id'):
         newLessonNote['id'] = lesson_note['Id']
     if existenceCheck(lesson_note, 'TimeStamp'):
-        newLessonNote['timestamp'] = datetime.datetime.strptime(lesson_note['TimeStamp'], "%Y-%m-%d %H:%M").date()
+        newLessonNote['timestamp'] = parse_wilma_date(lesson_note['TimeStamp']).date()
     if existenceCheck(lesson_note, 'Duration'):
         newLessonNote['duration'] = lesson_note['Duration']
     if existenceCheck(lesson_note, 'TeacherId'):

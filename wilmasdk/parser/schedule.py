@@ -17,7 +17,6 @@ def parse_wilma_date(date_string):
         if "unconverted data" in str(e) and backup_format is not None:
             date_time_obj = datetime.strptime(date_string, backup_format)
         else:
-            print(e)
             return None
     return date_time_obj
 
@@ -66,7 +65,6 @@ def parse_wilma_time(time_string, date: datetime = None):
         if "unconverted data" in str(e) and backup_format is not None:
             date_time_obj = datetime.strptime(time_string, backup_format)
         else:
-            print(e)
             return None
     if date is not None:
         return datetime.combine(date, date_time_obj.time())

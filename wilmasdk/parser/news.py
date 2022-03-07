@@ -2,6 +2,7 @@
 #  @author developerfromjokela
 import datetime
 import bs4
+from .schedule import parse_wilma_date
 
 
 def existenceCheck(dist_item, key):
@@ -12,7 +13,7 @@ def parseDate(string, date_format):
     try:
         return datetime.datetime.strptime(string, date_format)
     except:
-        return None
+        return parse_wilma_date(string)
 
 
 def optimizeNew(new):

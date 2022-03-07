@@ -2,7 +2,8 @@
 #  @author developerfromjokela
 
 import bs4
-import datetime
+
+from .schedule import parse_wilma_date
 
 
 def existenceCheck(dist_item, key):
@@ -40,9 +41,9 @@ def optimizeExam(exam):
     if existenceCheck(exam, 'Info'):
         newExam['info'] = bs4.BeautifulSoup(exam['Info'], 'html.parser').text
     if existenceCheck(exam, 'Date'):
-        newExam['date'] = datetime.datetime.strptime(exam['Date'], '%Y-%m-%d')
+        newExam['date'] = parse_wilma_date(exam['Date'])
     if existenceCheck(exam, 'ExamSeen'):
-        newExam['seenOn'] = datetime.datetime.strptime(exam['ExamSeen'], '%Y-%m-%d')
+        newExam['seenOn'] = parse_wilma_date(exam['ExamSeen'])
     if existenceCheck(exam, 'Grade'):
         newExam['grade']['grade'] = exam['Grade']
     if existenceCheck(exam, 'VerbalGrade'):
