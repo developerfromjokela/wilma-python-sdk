@@ -480,30 +480,39 @@ class WilmaAPIClient:
         except Exception as e:
             return ErrorResult(e)
 
-    def get_group_recipients(self, region=None, include_students=True):
-        def get_region(name):
-            wilma_region = self.fetch_group_recipients(name)
-            if wilma_region.is_error():
-                return wilma_region
-            wilma_region = [] if "PeriodGroups" not in wilma_region else wilma_region["PeriodGroups"]
+    def get_group_recipients(self, region=None, include_students=True, region_errors_as_empty=False):
+        def get_period(name, errors_as_empty=False):
+            wilma_period = self.fetch_group_recipients(name)
+            if wilma_period.is_error():
+                return [] if errors_as_empty else wilma_period
+            wilma_period = [] if "PeriodGroups" not in wilma_period else wilma_period["PeriodGroups"]
 
             if include_students:
-                for index, value in enumerate(wilma_region):
+                for index, value in enumerate(wilma_period):
                     if "ID" in value:
                         students = self.fetch_group_recipients(value["ID"])
                         if students.is_error():
                             return students
                         students = [] if "StudentRecords" not in students else students["StudentRecords"]
-                        wilma_region[index]['students'] = students
-            return wilma_region
+                        wilma_period[index]['students'] = students
+            return wilma_period
 
         if region is None:
-            past = get_region("past")
-            current = get_region("current")
-            future = get_region("future")
+            past = get_period("past", errors_as_empty=region_errors_as_empty)
+            current = get_period("current", errors_as_empty=region_errors_as_empty)
+            future = get_period("future", errors_as_empty=region_errors_as_empty)
+
+            if not region_errors_as_empty:
+                if not isinstance(past, list):
+                    return past
+                if not isinstance(current, list):
+                    return current
+                if not isinstance(future, list):
+                    return future
+
             return RecipientsResult({"past": past, "current": current, "future": future})
         else:
-            api_region = get_region(region)
+            api_region = get_period(region)
             return api_region if api_region.is_error() else RecipientsResult(api_region)
 
     def fetch_group_recipients(self, group_region, key_element=None):
