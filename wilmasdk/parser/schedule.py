@@ -86,15 +86,13 @@ def restructure(date: datetime, reservation):
 def parse_schedule(date: datetime, schedule):
     monday = date - timedelta(days=date.weekday())
     reservation_map = {}
-    current_day = 0
+    current_day = schedule[0].get("Day", 1)-1 if len(schedule) > 0 else 0
     last_day = 0
     for schedule_reservation in schedule:
         reservation_date = schedule_reservation.get("Day", -1)
         if reservation_date > last_day:
             if last_day != 0:
                 current_day = reservation_date - 1
-            else:
-                current_day = reservation_date
             last_day = reservation_date
 
         # Getting date
