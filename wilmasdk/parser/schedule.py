@@ -93,6 +93,8 @@ def parse_schedule(date: datetime, schedule):
         if reservation_date > last_day:
             if last_day != 0:
                 current_day = reservation_date - 1
+            else:
+                current_day = reservation_date
             last_day = reservation_date
 
         # Getting date

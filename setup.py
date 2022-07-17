@@ -8,7 +8,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='wilma-python-sdk',
-    version='0.3.3',
+    version='0.3.4',
     author="Developer From Jokela",
     author_email="info@developerfromjokela.com",
     description="Python SDK for Wilma API",
