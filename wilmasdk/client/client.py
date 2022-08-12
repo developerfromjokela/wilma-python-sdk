@@ -592,7 +592,7 @@ class WilmaAPIClient:
 
     def getGroupInTimeline(self, timeline="past"):
         try:
-            result = self.httpclient.authenticated_get_request(f'groups/index_json/${timeline}')
+            result = self.httpclient.authenticated_get_request(f'groups/index_json/{timeline}')
             if not result.is_error():
                 error_check = checkForWilmaError(result.get_response())
                 if error_check is not None:
