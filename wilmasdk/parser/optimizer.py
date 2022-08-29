@@ -90,6 +90,7 @@ def optimizeMessage(message):
         'recipients': [],
         'content': None,
         'replies': [],
+        'isUnread': False,
         'replyAllowed': False,
         'isEvent': False,
         "raw": message
@@ -120,6 +121,7 @@ def optimizeMessage(message):
         newMessage['replyAllowed'] = message['AllowCollatedReply']
     if existenceCheck(message, "IsEvent"):
         newMessage['isEvent'] = message['IsEvent']
+    newMessage['isUnread'] = existenceCheck(message, "Status") and message["Status"] == 1
     # Events support is not fully supported yet
     if existenceCheck(message, "EventData"):
         newMessage['eventData'] = optimize_dict(message['EventData'])
