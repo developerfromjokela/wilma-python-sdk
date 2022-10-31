@@ -53,9 +53,9 @@ class WilmaSDK:
         self.check_required_params(True)
         return self.apiClient.getGroups()
 
-    def get_messages(self):
+    def get_messages(self, folder="all"):
         self.check_required_params(True)
-        return self.apiClient.getMessages()
+        return self.apiClient.getMessages(folder=folder)
 
     def get_message(self, message_id: int):
         self.check_required_params(True)

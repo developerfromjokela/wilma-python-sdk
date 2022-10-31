@@ -370,20 +370,37 @@ class WilmaAPIClient:
         except Exception as e:
             return ErrorResult(e)
 
-    def getMessages(self):
+    def getMessages(self, folder="all"):
         try:
-            result = self.httpclient.authenticated_get_request('messages/index_json/all')
-            if not result.is_error():
-                error_check = checkForWilmaError(result.get_response())
-                if error_check is not None:
-                    return error_check
-                response = result.get_response().json()
+            if folder == "all":
+                inbox = self.httpclient.authenticated_get_request(f'messages/list/inbox')
+                archive = self.httpclient.authenticated_get_request(f'messages/list/archive')
+                outbox = self.httpclient.authenticated_get_request(f'messages/list/outbox')
+                appointments = self.httpclient.authenticated_get_request(f'messages/list/appointments')
                 messages = []
-                if "Messages" in response:
-                    messages = wilmasdk.parser.optimizer.optimizeMessages(response['Messages'])
+
+                for folder in [inbox, archive, outbox, appointments]:
+                    if not folder.is_error():
+                        error_check = checkForWilmaError(folder.get_response())
+                        if error_check is not None:
+                            return error_check
+                    response = folder.get_response().json()
+                    if "Messages" in response:
+                        messages = messages + wilmasdk.parser.optimizer.optimizeMessages(response['Messages'])
                 return MessagesResult(messages)
             else:
-                return result
+                result = self.httpclient.authenticated_get_request(f'messages/list/{folder}')
+                if not result.is_error():
+                    error_check = checkForWilmaError(result.get_response())
+                    if error_check is not None:
+                        return error_check
+                    response = result.get_response().json()
+                    messages = []
+                    if "Messages" in response:
+                        messages = wilmasdk.parser.optimizer.optimizeMessages(response['Messages'])
+                    return MessagesResult(messages)
+                else:
+                    return result
         except Exception as e:
             return ErrorResult(e)
 
@@ -534,7 +551,7 @@ class WilmaAPIClient:
 
     def getMessage(self, message_id: int):
         try:
-            result = self.httpclient.authenticated_get_request('messages/index_json/' + str(message_id))
+            result = self.httpclient.authenticated_get_request(f'messages/{str(message_id)}?format=json')
             if not result.is_error():
                 error_check = checkForWilmaError(result.get_response())
                 if error_check is not None:
