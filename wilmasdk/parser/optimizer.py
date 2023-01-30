@@ -16,9 +16,13 @@ types = {
     2: 'student',
     3: 'personnel',
     4: 'guardian',
-    5: 'workplaceinstructor',
-    6: 'johtokunta',
-    7: 'passwd'
+    5: 'instructor',
+    6: 'board',
+    7: 'passwd',
+    8: 'trainingcoordinator',
+    9: 'training',
+    10: 'applicant',
+    11: 'applicantguardian'
 }
 
 
